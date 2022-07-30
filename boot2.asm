@@ -5,52 +5,95 @@ jmp 0x0000:start
 ;utilizar o método de shift left (hexadecimal)
 ;e somar o offset no adress base, para rodarmos o kernel.
 
-runningKernel db 'Rodando Kernel...', 0
+runningKernel db 'Rodando Kernel', 0
+dot db '.', 0
+finalDot db '.', 10, 13, 0
 
+cleanScreen:
+;; Limpa a tela dos caracteres colocados pela BIOS
+	; Set the cursor to top left-most corner of screen
+	mov dx, 0 
+    mov bh, 0      
+    mov ah, 0x2
+    int 0x10
 
-print_string:
+    ; print 2000 blanck chars to clean  
+    mov cx, 2000 
+    mov bh, 0
+    mov al, 0x20 ; blank char
+    mov ah, 0x9
+    int 0x10
+    
+    ;Reset cursor to top left-most corner of screen
+    mov dx, 0 
+    mov bh, 0      
+    mov ah, 0x2
+    int 0x10
+ret
+
+printString: 
+;; Printa a string que esta em si    
+	
 	lodsb
-	cmp al,0
-	je end
+	cmp al, 0
+	je exit
 
-	mov ah, 0eh
-	mov bl, 15
-	int 10h
+	mov ah, 0xe
+	int 10h	
 
-	mov dx, 0
-	.delay_print:
-	inc dx
-	mov cx, 0
-		.time:
-			inc cx
-			cmp cx, 10000
-			jne .time
+	mov dx, 70;tempo do delay
+	call delay 
+	
+	jmp printString
+exit:
+ret
 
-	cmp dx, 1000
-	jne .delay_print
+delay: 
+;; Função que aplica um delay(improvisado) baseado no valor de dx
+	mov bp, dx
+	back:
+	dec bp
+	nop
+	jnz back
+	dec dx
+	cmp dx,0    
+	jnz back
+ret
 
-	jmp print_string
+printDots:
+;; Printa os pontos das reticências
+	mov cx, 2
 
-	end:
-		mov ah, 0eh
-		mov al, 0xd
-		int 10h
-		mov al, 0xa
-		int 10h
-		ret
+	for:
+		mov si, dot
+		call printString
+		mov dx, 200
+		call delay
+	dec cx
+	cmp cx, 0
+	jne for
+
+	mov dx, 300
+	call delay
+	mov si, finalDot
+	call printString
+	
+ret
 
 start:
-    xor ax, ax
-    mov ds, ax
-    mov es, ax
 
+	mov bl, 10 ; Seta cor dos caracteres para verde
+	call cleanScreen
 
     ;parte pra printar as mensagens que quisermos
 
-
     mov si, runningKernel
-    call print_string
+    call printString
+	call printDots
 
+	xor ax, ax
+    mov ds, ax
+    mov es, ax
 
     reset:
         mov ah, 00h ;reseta o controlador de disco
