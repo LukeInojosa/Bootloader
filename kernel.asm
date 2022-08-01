@@ -40,7 +40,7 @@ initvideo:
 
 _writechar:
     mov ah, 0xe
-    mov bx, 1
+    mov bx, 3
     int 10h
     ret
 
@@ -57,14 +57,34 @@ printString:
 
 loopGame:
     inc cx
-     cmp cx,1000;o loop roda enquanto cx for diferente de 1000
-     je .end_game_loop
+    mov al, 3
+    cmp cx,1000 ;o loop roda enquanto cx for diferente de 1000
+    je .end_game_loop
 	;loop 
         call _writechar
+        call scan_key
 
-     delay_fps;delay de 1/30 segundos
-     jmp loopGame
+    delay_fps ;delay de 1/30 segundos
+    jmp loopGame
     .end_game_loop:
+
+scan_key:
+        mov ah, 1h
+        int 16h
+        jnz .key_pressed
+        ret
+               
+            .key_pressed:
+                mov ah, 0h
+                int 16h
+               
+        cmp al, 32
+        je pular
+        jne loopGame
+    
+pular:
+    call _writechar
+    jmp loopGame
 
 ;Inicio do programa
 start:
@@ -93,7 +113,7 @@ Menu:
     ;Colocando o Titulo
 	mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
-	mov dh, 10    ;Linha
+	mov dh, 10   ;Linha
 	mov dl, 34   ;Coluna
 	int 10h
     mov si, titulo
