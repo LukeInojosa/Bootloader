@@ -1,5 +1,37 @@
 org 0x7e00
 jmp 0x0000:start
+;cores de pixel
+ preto db 0
+ azul db 1
+ verde db 2
+ cyan db 3
+ vermelho db 4
+ magenta db 5
+ marrom db 6
+ branco db 7
+ cinza db 8
+ azul_claro db 9
+ verde_claro db 10
+ cyan_claro db 11
+ rosa db 12
+ magenta_claro db 13
+ amarelo db 14
+ branco_intenso db 15
+;cores de pixel
+func_write_pixel:
+    mov ah,0ch;funcao desenhar pixel
+    mov bh,0;numero da pagina
+    int 10h
+ ret
+%macro write_pixel 3
+    pusha
+    ;tamanho da tela é 320x200
+    mov al,%1;cor do pixel
+    mov cx,%2;posicao x
+    mov dx,%3;posicao y
+    call func_write_pixel
+    popa
+%endmacro
 
 ;Textos menu
 titulo      db 'FLAPPLY BIRD', 0
@@ -55,18 +87,23 @@ printString:
     jne printString
     ret
 
-loopGame:
-    inc cx
-    mov al, 3
-    cmp cx,1000 ;o loop roda enquanto cx for diferente de 1000
-    je .end_game_loop
-	;loop 
-        call _writechar
-        call scan_key
-
-    delay_fps ;delay de 1/30 segundos
-    jmp loopGame
-    .end_game_loop:
+loopGame:;loop cx[0,320]
+ inc cx
+ mov al, 3
+ cmp cx,320 
+ je .end_game_loop
+    xor dx,dx
+    .loop2: ; loop dx[0,200]
+     cmp dx,200
+     je .end_loop2
+     inc dx
+        write_pixel [verde],cx,dx
+        ;call scan_key
+     jmp .loop2
+    .end_loop2:
+ delay_fps ;delay de 1/30 segundos
+ jmp loopGame
+.end_game_loop:
 
 scan_key:
         mov ah, 1h
@@ -171,6 +208,7 @@ play:
     call initvideo
     mov al,3
 
+    xor dx,dx
     call loopGame
     jmp done
 
