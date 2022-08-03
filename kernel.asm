@@ -1,5 +1,8 @@
 org 0x7e00
 jmp 0x0000:start
+;vetor de alturas das barras:
+ vet_alturas db 75,105,87,103,106,96,105,121,104,75,125
+ pos_vet db 0
 ;cores de pixel
  preto db 0
  azul db 1
@@ -17,23 +20,47 @@ jmp 0x0000:start
  magenta_claro db 13
  amarelo db 14
  branco_intenso db 15
-;cores de pixel
-func_write_pixel:
-    mov ah,0ch;funcao desenhar pixel
-    mov bh,0;numero da pagina
-    int 10h
- ret
-%macro write_pixel 3
-    pusha
-    ;tamanho da tela é 320x200
-    mov al,%1;cor do pixel
-    mov cx,%2;posicao x
-    mov dx,%3;posicao y
-    call func_write_pixel
-    popa
-%endmacro
+;estrutura barra1(x,y)
+ x_barra1 dw 300;posicao x da barra
+ y_barra1 dw 120;posicao y da barra 
+;estrutura barra2(x,y)
+ x_barra2 dw 320;posicao x da barra
+ y_barra2 dw 120;posicao y da barra
+ vel_barra dw 4;velocidade da barra
 
+
+
+
+
+;funcoes para a barra:
+ update_Xbarra:
+    ;deslocando barra
+     mov ax,[x_barra1]
+     sub ax,[vel_barra]
+    ;atualizando posição da barra
+     mov [x_barra1],ax
+ ret
+ update_Ybarra:;escolher um numero aleatorio entre 125 e 75
+    mov bx,[pos_vet]
+    inc bx
+    cmp bx,11
+    jne .atualizar_y
+    xor bx,bx
+
+    .atualizar_y:
+
+    mov [pos_vet],bx
+    mov si,vet_alturas
+    add si,bx
+    xor ax,ax
+    lodsb
+    mov [y_barra1],ax
+ ret
 ;Textos menu
+screen_clear:
+    mov ax,12h
+    int 10h
+    ret
 titulo      db 'FLAPPLY BIRD', 0
 jogar       db 'Play (1)', 0
 instrucoes  db 'Instruction (2)', 0
@@ -51,7 +78,20 @@ creditos4 db 'Press Esc to return', 0
 points dw 0
 
 ;score
-
+func_write_pixel:
+    mov ah,0ch;funcao desenhar pixel
+    mov bh,0;numero da pagina
+    int 10h
+ ret
+%macro write_pixel 3
+    pusha
+    ;tamanho da tela é 320x200
+    mov al,%1;cor do pixel
+    mov cx,%2;posicao x
+    mov dx,%3;posicao y
+    call func_write_pixel
+    popa
+%endmacro
 ; macro
 %macro delay_fps 0
     pusha
@@ -87,13 +127,19 @@ printString:
     jne printString
     ret
 
-loopGame:;loop cx[0,320]
- inc cx
- mov al, 3
- cmp cx,320 
- je .end_game_loop
-    xor dx,dx
-    .loop2: ; loop dx[0,200]
+loopGame:;loop cx[xbarra,xbarra+3]
+ pusha
+ call update_Xbarra
+ popa
+ mov cx,[x_barra1]
+ mov ax,cx
+ add ax,30
+ .loop1:
+    inc cx
+    cmp cx,ax
+    je .endloop1
+    mov dx,100
+    .loop2: ; loop dx[100,200]
      cmp dx,200
      je .end_loop2
      inc dx
@@ -101,10 +147,12 @@ loopGame:;loop cx[0,320]
         ;call scan_key
      jmp .loop2
     .end_loop2:
+ jmp .loop1
+ .endloop1:
  delay_fps ;delay de 1/30 segundos
+ call screen_clear;limpar tela a cada frame
  jmp loopGame
 .end_game_loop:
-
 scan_key:
         mov ah, 1h
         int 16h
@@ -205,10 +253,11 @@ Menu:
         jne selecao
      
 play:
-    call initvideo
+    call initvideo;set video mode 
     mov al,3
 
-    xor dx,dx
+    mov cx,160
+    mov dx,100
     call loopGame
     jmp done
 
