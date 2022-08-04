@@ -79,6 +79,10 @@ instrucoes  db 'Instruction (2)', 0
 creditos    db 'Credits (3)', 0
 
 ;instrucoes
+inst0 db 'INSTRUCOES', 0
+inst1 db '1. Aperte espaco para nao cair', 0
+inst2 db '2. Nao encoste no chao', 0
+inst3 db '3. Nao encoste nos tubos',0 
 
 ;creditos
 creditos1 db 'Lucas Inojosa <lims>', 0
@@ -247,14 +251,9 @@ ret
 
 colisao:
     ;colisão com o chão
-    mov ax, [bird_y]
-    add ax, bird_y_tamanho
-    ;mov ax, [bird_y_posFinal]
-    cmp ax, 310
-    jle ocorreuColisao
-
-
-
+    mov ax, [bird_y_posFinal]
+    cmp ax, 460
+    jge ocorreuColisao
 ret
 
 ocorreuColisao:
@@ -399,21 +398,56 @@ instrucao:
     mov al,12h
     int 10h
 
-    ;Mudando a cor do background para azul escuro
+    ;Mudando a cor do background para ciano
     mov ah, 0bh
     mov bh, 0
-    mov bl, 1
+    mov bl, 3
     int 10h 
 
-    ;Colocando o titulo
+    ;Colocando o Titulo
 	mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
-	mov dh, 3    ;Linha
+	mov dh, 5   ;Linha
+	mov dl, 34   ;Coluna
+	int 10h
+    mov si, inst0
+    call printString
+
+    ;Colocando a string 
+    mov ah, 02h  ;Setando o cursor
+	mov bh, 0    ;Pagina 0
+	mov dh, 10   ;Linha
+	mov dl, 23   ;Coluna
+	int 10h
+    mov si, inst1
+    call printString
+    
+    ;Colocando a string 
+    mov ah, 02h  ;Setando o cursor
+	mov bh, 0    ;Pagina 0
+	mov dh, 13   ;Linha
+	mov dl, 23   ;Coluna
+	int 10h
+    mov si, inst2
+    call printString
+    
+    ;Colocando a string
+    mov ah, 02h  ;Setando o cursor
+	mov bh, 0    ;Pagina 0
+	mov dh, 16   ;Linha
+	mov dl, 23   ;Coluna
+	int 10h
+    mov si, inst3
+    call printString
+
+    ;Colocando a string
+    mov ah, 02h  ;Setando o cursor
+	mov bh, 0    ;Pagina 0
+	mov dh, 23   ;Linha
 	mov dl, 29   ;Coluna
 	int 10h
-    mov si, instrucoes
+    mov si, creditos4
     call printString
-    ret
 
 ESCinstrucao:    
     ;Para receber o caractere
@@ -432,7 +466,7 @@ credito:
     mov al,12h
     int 10h
 
-    ;Mudando a cor do background para azul escuro
+    ;Mudando a cor do background para ciano
     mov ah, 0bh
     mov bh, 0
     mov bl, 3
