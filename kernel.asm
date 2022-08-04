@@ -32,7 +32,7 @@ jmp 0x0000:start
     bird_x dw 120
     bird_y dw 100
 
-    bird_up dw 40
+    bird_up dw 100
     bird_down dw 1
 
     bird_x_tamanho dw 20
@@ -41,10 +41,8 @@ jmp 0x0000:start
     bird_x_posFinal dw 140
     bird_y_posFinal dw 120
 
-    parametro_passaro_velocidade dw 2
-    i_passaro dw 0
-
-
+    bird_contadorMax_velocidade dw 5
+    bird_contador_velocidade dw 0
 
 ;funcoes para a barra:
     update_Xbarra:
@@ -183,19 +181,21 @@ update_yBird_down:
 ret
 
 update_velocidade:
-    inc word[i_passaro]
-    mov ax, [i_passaro]
-    mov bx, [parametro_passaro_velocidade]
+    inc word[bird_contador_velocidade]
+    mov ax, [bird_contador_velocidade]
+    mov bx, [bird_contadorMax_velocidade]
     cmp ax, bx
     je incrementa_velocidade_passaro
 ret
 
 incrementa_velocidade_passaro:
     mov ax, [bird_down]
-    cmp ax, 3 
+    cmp ax, 3
     jne .somaVelocidade
     .somaVelocidade:   
-        inc word[i_passaro]
+        inc word[bird_down]
+        mov ax, 0
+        mov [bird_contador_velocidade], ax
     ret
 ret
 
@@ -221,7 +221,6 @@ print_retangulo:
     .endloop1:
 ret
 
-
 print_bird:
     call update_velocidade
     call update_yBird_down
@@ -246,6 +245,17 @@ print_bird:
     .endloop1:
 ret 
 
+colisao:
+    ;colisão com o chão
+    mov ax, [bird_y]
+    add ax, bird_y_tamanho
+    cmp ax, 310
+    jle Menu
+
+
+
+ret
+
 loopGame:;loop cx[xbarra,xbarra+3]
     pusha
     popa
@@ -253,6 +263,7 @@ loopGame:;loop cx[xbarra,xbarra+3]
     call scan_key
     ;call print_retangulo
     call print_bird
+    call colisao
 
     delay_fps               ; delay de 1/30 segundos
     call screen_clear       ; limpar tela a cada frame
