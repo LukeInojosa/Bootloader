@@ -21,14 +21,14 @@ videomem_addr dw 0a000h ;endereço da memoria de vídeo
     popa
 %endmacro
 %macro imprimir_retangulo 4 ;(x,y,largura,altura)[posicao do canto superior esquerdo,tamanho]
-    mov ax,%1
-    mov [rec_X],ax;pos x
-    mov ax,%2
-    mov [rec_Y],ax;pos y
-    mov ax,%3
-    mov [rec_largura],ax;largura
-    mov ax,%4
-    mov [rec_altura],ax;altura
+     mov ax,%1
+     mov bx,%2
+     mov cx,%3
+     mov dx,%4
+     mov [rec_X],ax;pos x
+     mov [rec_Y],bx;pos y
+     mov [rec_largura],cx;largura
+     mov [rec_altura],dx;altura
     call _imprimir_retangulo
 %endmacro
 _imprimir_retangulo:
@@ -59,18 +59,14 @@ _imprimir_retangulo:
             xor cx,cx 
             inc dx
             cmp dx,[rec_altura]
+
             jge .endprint_pixel
-               ;atualizar posicao onde pixel sera impresso
-                mov bx,[tela_largura]
-                add dx,[rec_Y]
-                mov ax,dx
-                mul bx
 
-                add ax,[rec_X]
-
-                mov di,ax
-
-                sub dx,[rec_Y]
+               ;atualizar linha onde pixel sera impresso
+                dec di
+                sub di,[rec_largura]  ; retorna pro começo
+                add di,[tela_largura] ;linha de baixo
+                
         .nao_muda_linha:
      jmp .print_pixel   
     .endprint_pixel:
@@ -108,7 +104,7 @@ start:
 
     ; start_game_loop:
     ;     call clear_screem
-        imprimir_retangulo 100,100,100,100
+       imprimir_retangulo 50,50,50,50
     ;  delay_fps
     ;  jmp start_game_loop
     ; .end_game_loop:
