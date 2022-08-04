@@ -152,7 +152,7 @@ scan_key:
         cmp al, 32
         je pular
 ret
-    
+
 pular:
     call update_yBird_up
 ret
@@ -249,11 +249,43 @@ colisao:
     ;colisão com o chão
     mov ax, [bird_y]
     add ax, bird_y_tamanho
+    ;mov ax, [bird_y_posFinal]
     cmp ax, 310
-    jle Menu
+    jle ocorreuColisao
 
 
 
+ret
+
+ocorreuColisao:
+    ;Reiniciando vairáveis
+    mov ax, 120
+    mov [bird_x], ax
+
+    mov ax, 100
+    mov [bird_y], ax
+
+    mov ax, 140
+    mov [bird_x_posFinal], ax
+
+    mov ax, 120
+    mov [bird_y_posFinal], ax
+
+    mov ax, 1
+    mov [bird_down], ax
+    
+    mov ax, 20
+    mov [bird_x_tamanho], ax
+
+    mov ax, 20
+    mov [bird_y_tamanho], ax
+
+    mov ax, 0
+    mov [bird_contador_velocidade], ax
+
+    delay_fps
+    call screen_clear 
+    jmp Menu 
 ret
 
 loopGame:;loop cx[xbarra,xbarra+3]
@@ -283,7 +315,6 @@ start:
     jmp done
 
 Menu:
-
     ;Carregando o video
     mov ah, 0
     mov al,12h
