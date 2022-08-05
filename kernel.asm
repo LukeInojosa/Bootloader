@@ -41,7 +41,7 @@ videomem_addr dw 0a000h ;endereço da memoria de vídeo
     bird_x dw 120
     bird_y dw 100
 
-    bird_up dw 100
+    bird_up dw 25
     bird_down dw 1
 
     bird_x_tamanho dw 20
@@ -163,7 +163,7 @@ clear_registers:
     pusha
     mov ah, 86h ;função delay da bios
     mov cx, 0 ;high word
-    mov dx, 8236 ;low word
+    mov dx, 16000 ;low word
     int 15h
     popa
 %endmacro
