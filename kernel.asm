@@ -1,5 +1,14 @@
 org 0x7e00
 jmp 0x0000:start
+videomem_addr dw 0a000h ;endereço da memoria de vídeo 
+;struct rectangle
+ rec_X       dw 0
+ rec_Y       dw 0
+ rec_largura dw 0
+ rec_altura  dw 0
+;tela
+ tela_largura dw 320
+ tela_altura dw 200
 ;vetor de alturas das barras:
  vet_alturas db 75,105,87,103,106,96,105,121,104,75,125
  pos_vet db 0
@@ -68,9 +77,8 @@ jmp 0x0000:start
         lodsb
         mov [y_barra1],ax
     ret
-;Textos menu
 screen_clear:
-    mov ax,12h
+    mov ax,13h
     int 10h
     ret
 titulo      db 'FLAPPLY BIRD', 0
@@ -92,22 +100,64 @@ creditos4 db 'Press Esc to return', 0
 
 ;parte do jogo
 points dw 0
-
-;score
-func_write_pixel:
-    mov ah,0ch;funcao desenhar pixel
-    mov bh,0;numero da pagina
-    int 10h
- ret
-%macro write_pixel 3
-    pusha
-    ;tamanho da tela é 320x200
-    mov al,%1;cor do pixel
-    mov cx,%2;posicao x
-    mov dx,%3;posicao y
-    call func_write_pixel
-    popa
+%macro imprimir_retangulo 4 ;(x,y,largura,altura)[posicao do canto superior esquerdo,tamanho]
+     mov ax,%1
+     mov bx,%2
+     mov cx,%3
+     mov dx,%4
+     mov [rec_X],ax;pos x
+     mov [rec_Y],bx;pos y
+     mov [rec_largura],cx;largura
+     mov [rec_altura],dx;altura
+    call _imprimir_retangulo
 %endmacro
+_imprimir_retangulo:
+    mov es,[videomem_addr];colocando endereço da mem de video em extra segment
+    
+    mov bx,[tela_largura]
+    mov ax,[rec_Y]
+    mul bx
+
+    add ax,[rec_X]
+
+    mov di,ax
+    
+    call clear_registers
+   ;imprimindo pixels
+
+    .print_pixel:;imprimir um pixel na memoria de video[320,200]
+       ;escrevendo cor no video na posição ax
+        mov bl,15
+
+        mov [es:di],bl;só di pode determinar deslocamento
+       ;atualizando posição a ser escrita 
+        inc cx ;contador da coluna
+        inc di
+        cmp cx,[rec_largura]
+        jle .nao_muda_linha
+           ;zera iterador da coluna
+            xor cx,cx 
+            inc dx
+            cmp dx,[rec_altura]
+
+            jge .endprint_pixel
+
+               ;atualizar linha onde pixel sera impresso
+                dec di
+                sub di,[rec_largura]  ; retorna pro começo
+                add di,[tela_largura] ;linha de baixo
+                
+        .nao_muda_linha:
+     jmp .print_pixel   
+    .endprint_pixel:
+ ret
+
+clear_registers:
+    xor ax,ax
+    xor bx,bx
+    xor cx,cx
+    xor dx,dx  
+ ret
 ; macro
 %macro delay_fps 0
     pusha
@@ -117,15 +167,11 @@ func_write_pixel:
     int 15h
     popa
 %endmacro
-
-;funções do jogo
 initvideo:
     mov al, 13h
     mov ah, 0
     int 10h
     ret
-
-
 writechar:
     mov ah, 0xe
     mov bx, 3
@@ -155,8 +201,7 @@ scan_key:
                
         cmp al, 32
         je pular
-ret
-
+ ret
 pular:
     call update_yBird_up
 ret
@@ -173,7 +218,6 @@ update_yBird_up:
     mov ax, 1
     mov [bird_down], ax
 ret
-
 update_yBird_down:
     mov ax, [bird_y]
     add ax, [bird_down]
@@ -183,7 +227,6 @@ update_yBird_down:
     add ax, [bird_down]
     mov [bird_y_posFinal], ax
 ret
-
 update_velocidade:
     inc word[bird_contador_velocidade]
     mov ax, [bird_contador_velocidade]
@@ -201,58 +244,16 @@ incrementa_velocidade_passaro:
         mov ax, 0
         mov [bird_contador_velocidade], ax
     ret
-ret
-
-print_retangulo:
-    call update_Xbarra
-    mov cx,[x_barra1]
-    mov ax,cx
-    add ax,30
-
-    .loop1:
-        inc cx
-        cmp cx,ax
-        je .endloop1
-        mov dx,100
-        .loop2:             ; loop dx[100,200]
-            cmp dx,200
-            je .end_loop2
-            inc dx
-            write_pixel [verde],cx,dx
-            jmp .loop2
-        .end_loop2:
-        jmp .loop1
-    .endloop1:
-ret
-
+ ret
 print_bird:
     call update_velocidade
     call update_yBird_down
-
-    mov cx,[bird_x]
-    mov ax,cx
-    add ax,30
-
-    .loop1:
-        inc cx
-        cmp cx,ax
-        je .endloop1
-        mov dx,[bird_y]
-        .loop2:
-            cmp dx, [bird_y_posFinal]
-            je .end_loop2
-            inc dx
-            write_pixel [azul_claro],cx,dx
-            jmp .loop2
-        .end_loop2:
-        jmp .loop1
-    .endloop1:
-ret 
-
+    imprimir_retangulo [bird_x],[bird_y],20,10
+ ret 
 colisao:
     ;colisão com o chão
     mov ax, [bird_y_posFinal]
-    cmp ax, 460
+    cmp ax, 200
     jge ocorreuColisao
 ret
 
@@ -288,17 +289,13 @@ ocorreuColisao:
 ret
 
 loopGame:;loop cx[xbarra,xbarra+3]
-    pusha
-    popa
-
     call scan_key
-    ;call print_retangulo
     call print_bird
     call colisao
 
     delay_fps               ; delay de 1/30 segundos
     call screen_clear       ; limpar tela a cada frame
-    jmp loopGame
+ jmp loopGame
 .end_game_loop:
 
 
