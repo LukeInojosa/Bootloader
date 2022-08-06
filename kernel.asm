@@ -1,17 +1,24 @@
 org 0x7e00
 jmp 0x0000:start
 videomem_addr dw 0a000h ;endereço da memoria de vídeo 
+
+; flappy img
+ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 0, 15, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 0, 7, 15, 15, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 0, 7, 15, 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 15, 15, 15, 15, 0, 14, 14, 14, 14, 0, 7, 7, 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 15, 15, 15, 15, 15, 0, 14, 14, 14, 14, 0, 7, 7, 15, 15, 0, 0, 0, 0, 0, 0, 0, 7, 15, 15, 15, 7, 0, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 14, 14, 14, 14, 0, 12, 12, 12, 12, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 14, 14, 14, 14, 14, 0, 12, 12, 12, 12, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+
 ;struct rectangle
  rec_X       dw 0
  rec_Y       dw 0
- rec_largura dw 0
- rec_altura  dw 0
-;tela
- tela_largura dw 320
- tela_altura dw 200
-;vetor de alturas das barras:
- vet_alturas db 75,105,87,103,106,96,105,121,104,75,125
+ rec_width dw 0
+ rec_height  dw 0
+
+;info screen
+ screen_width dw 320
+ screen_height dw 200
+
+;vetor de alturas das barras
+ vet_heights db 75,105,87,103,106,96,105,121,104,75,125
  pos_vet db 0
+
 ;cores de pixel
  preto db 0
  azul db 1
@@ -29,39 +36,59 @@ videomem_addr dw 0a000h ;endereço da memoria de vídeo
  magenta_claro db 13
  amarelo db 14
  branco_intenso db 15
-;estrutura barra1(x,y)
- x_barra1 dw 300;posicao x da barra
- y_barra1 dw 120;posicao y da barra 
-;estrutura barra2(x,y)
- x_barra2 dw 320;posicao x da barra
- y_barra2 dw 120;posicao y da barra
- vel_barra dw 4;velocidade da barra
 
-;Informações do pássaro
-    bird_x dw 120
-    bird_y dw 100
+; barra1 (x,y)
+ x_barra1 dw 300    
+ y_barra1 dw 120    
 
-    bird_up dw 25
-    bird_down dw 1
+; barra2 (x,y)
+ x_barra2 dw 320
+ y_barra2 dw 120
+ speed_barra dw 4   ; velocidade da barra
 
-    bird_x_tamanho dw 20
-    bird_y_tamanho dw 20
+; Info do passaro
+ bird_x dw 120
+ bird_y dw 100
 
-    bird_x_posFinal dw 140
-    bird_y_posFinal dw 120
+ bird_up dw 25
+ bird_down dw 1
 
-    bird_contadorMax_velocidade dw 5
-    bird_contador_velocidade dw 0
+ bird_x_tam dw 19
+ bird_y_tam dw 22
+
+ bird_x_posFinal dw 140
+ bird_y_posFinal dw 120
+
+ bird_max_speed dw 5     ; velocidade max do passaro
+ bird_count_speed dw 0   ; contador de velocidade do passaro
+
+; Info tela inicial
+ title db 'FLAPPLY BIRD', 0
+ playName db 'Play (1)', 0
+ instruction db 'Instruction (2)', 0
+ credits db 'Credits (3)', 0
+
+; instrucoes
+ inst0 db 'INSTRUCOES', 0
+ inst1 db '1. Aperte espaco para nao cair', 0
+ inst2 db '2. Nao encoste no chao', 0
+ inst3 db '3. Nao encoste nos tubos',0 
+
+; creditos
+ credits1 db 'Lucas Inojosa <lims>', 0
+ credits2 db 'Luis Felipe <lfro2>', 0
+ credits3 db 'Kaylane Lira <kgl>', 0
+ credits4 db 'Press Esc to return', 0
 
 ;funcoes para a barra:
     update_Xbarra:
         ;deslocando barra
         mov ax,[x_barra1]
-        sub ax,[vel_barra]
+        sub ax,[speed_barra]
         ;atualizando posição da barra
         mov [x_barra1],ax
     ret
-    update_Ybarra:;escolher um numero aleatorio entre 125 e 75
+    update_Ybarra:  ;escolher um numero aleatorio entre 125 e 75
         mov bx,[pos_vet]
         inc bx
         cmp bx,11
@@ -71,86 +98,21 @@ videomem_addr dw 0a000h ;endereço da memoria de vídeo
         .atualizar_y:
 
         mov [pos_vet],bx
-        mov si,vet_alturas
+        mov si,vet_heights
         add si,bx
         xor ax,ax
         lodsb
         mov [y_barra1],ax
     ret
-screen_clear:
-    mov ax,13h
-    int 10h
-    ret
-titulo      db 'FLAPPLY BIRD', 0
-jogar       db 'Play (1)', 0
-instrucoes  db 'Instruction (2)', 0
-creditos    db 'Credits (3)', 0
-
-;instrucoes
-inst0 db 'INSTRUCOES', 0
-inst1 db '1. Aperte espaco para nao cair', 0
-inst2 db '2. Nao encoste no chao', 0
-inst3 db '3. Nao encoste nos tubos',0 
-
-;creditos
-creditos1 db 'Lucas Inojosa <lims>', 0
-creditos2 db 'Luis Felipe <lfro2>', 0
-creditos3 db 'Kaylane Lira <kgl>', 0
-creditos4 db 'Press Esc to return', 0
-
-;parte do jogo
-points dw 0
-%macro imprimir_retangulo 4 ;(x,y,largura,altura)[posicao do canto superior esquerdo,tamanho]
-     mov ax,%1
-     mov bx,%2
-     mov cx,%3
-     mov dx,%4
-     mov [rec_X],ax;pos x
-     mov [rec_Y],bx;pos y
-     mov [rec_largura],cx;largura
-     mov [rec_altura],dx;altura
-    call _imprimir_retangulo
+; funcoes/macros base
+%macro delay_fps 0
+    pusha
+    mov ah, 86h ; função delay da bios
+    mov cx, 0 ; high word
+    mov dx, 16000 ; low word
+    int 15h
+    popa
 %endmacro
-_imprimir_retangulo:
-    mov es,[videomem_addr];colocando endereço da mem de video em extra segment
-    
-    mov bx,[tela_largura]
-    mov ax,[rec_Y]
-    mul bx
-
-    add ax,[rec_X]
-
-    mov di,ax
-    
-    call clear_registers
-   ;imprimindo pixels
-
-    .print_pixel:;imprimir um pixel na memoria de video[320,200]
-       ;escrevendo cor no video na posição ax
-        mov bl,15
-
-        mov [es:di],bl;só di pode determinar deslocamento
-       ;atualizando posição a ser escrita 
-        inc cx ;contador da coluna
-        inc di
-        cmp cx,[rec_largura]
-        jle .nao_muda_linha
-           ;zera iterador da coluna
-            xor cx,cx 
-            inc dx
-            cmp dx,[rec_altura]
-
-            jge .endprint_pixel
-
-               ;atualizar linha onde pixel sera impresso
-                dec di
-                sub di,[rec_largura]  ; retorna pro começo
-                add di,[tela_largura] ;linha de baixo
-                
-        .nao_muda_linha:
-     jmp .print_pixel   
-    .endprint_pixel:
- ret
 
 clear_registers:
     xor ax,ax
@@ -158,20 +120,13 @@ clear_registers:
     xor cx,cx
     xor dx,dx  
  ret
-; macro
-%macro delay_fps 0
-    pusha
-    mov ah, 86h ;função delay da bios
-    mov cx, 0 ;high word
-    mov dx, 16000 ;low word
-    int 15h
-    popa
-%endmacro
+
 initvideo:
     mov al, 13h
     mov ah, 0
     int 10h
     ret
+
 writechar:
     mov ah, 0xe
     mov bx, 3
@@ -200,12 +155,70 @@ scan_key:
                 int 16h
                
         cmp al, 32
-        je pular
- ret
-pular:
-    call update_yBird_up
+        je jump
+    jump:
+        call update_yBird_up
 ret
 
+screen_clear:
+    mov ax,13h
+    int 10h
+    ret
+
+; funcoes/macros retangulo
+%macro print_rectangle 4 ;(x,y,width,height)[posicao do canto superior esquerdo,tam]
+     mov ax,%1
+     mov bx,%2
+     mov cx,%3
+     mov dx,%4
+     mov [rec_X],ax     ;pos x
+     mov [rec_Y],bx     ;pos y
+     mov [rec_width],cx     ;width
+     mov [rec_height],dx    ;height
+    call _print_rectangle
+%endmacro
+
+_print_rectangle:
+    mov es,[videomem_addr]  ; colocando endereço da mem de video em extra segment
+    
+    mov bx,[screen_width]
+    mov ax,[rec_Y]
+    mul bx
+
+    add ax,[rec_X]
+
+    mov di,ax
+    
+    call clear_registers
+
+    ; imprimindo pixels
+    .print_pixel:       ; imprimir um pixel na memoria de video[320,200]
+        ; escrevendo cor no video na posição ax
+        mov bl, [amarelo]
+
+        mov [es:di], bl  ; só di pode determinar deslocamento
+        ; atualizando posição a ser escrita 
+        inc cx ; contador da coluna
+        inc di
+        cmp cx,[rec_width]
+        jle .same_row
+            ; zera iterador da coluna
+            xor cx,cx 
+            inc dx
+            cmp dx,[rec_height]
+            jge .endprint_pixel
+                ;atualizar linha onde pixel sera impresso
+                dec di
+                sub di,[rec_width]  ; retorna pro começo
+                add di,[screen_width] ; linha de baixo
+        .same_row:
+            lodsb
+            jmp .print_pixel   
+
+    .endprint_pixel:
+        ret
+
+; funcoes do passaro
 update_yBird_up:
     mov ax, [bird_y]
     sub ax, [bird_up]
@@ -217,7 +230,8 @@ update_yBird_up:
 
     mov ax, 1
     mov [bird_down], ax
-ret
+    ret
+
 update_yBird_down:
     mov ax, [bird_y]
     add ax, [bird_down]
@@ -226,39 +240,43 @@ update_yBird_down:
     mov ax, [bird_y_posFinal]
     add ax, [bird_down]
     mov [bird_y_posFinal], ax
-ret
-update_velocidade:
-    inc word[bird_contador_velocidade]
-    mov ax, [bird_contador_velocidade]
-    mov bx, [bird_contadorMax_velocidade]
-    cmp ax, bx
-    je incrementa_velocidade_passaro
-ret
+    ret
 
-incrementa_velocidade_passaro:
+update_birdSpeed:
+    inc word[bird_count_speed]
+    mov ax, [bird_count_speed]
+    mov bx, [bird_max_speed]
+    cmp ax, bx
+    je inc_birdSpeed
+    ret
+
+inc_birdSpeed:
     mov ax, [bird_down]
     cmp ax, 3
-    jne .somaVelocidade
-    .somaVelocidade:   
+    jne .sum_speed
+    .sum_speed:   
         inc word[bird_down]
         mov ax, 0
-        mov [bird_contador_velocidade], ax
+        mov [bird_count_speed], ax
     ret
  ret
+
 print_bird:
-    call update_velocidade
+    call update_birdSpeed
     call update_yBird_down
-    imprimir_retangulo [bird_x],[bird_y],20,10
+    mov dx, 1
+    print_rectangle [bird_x], [bird_y], [bird_x_tam], [bird_y_tam]
  ret 
-colisao:
-    ;colisão com o chão
+
+; funcoes do jogo
+collision:    ; colisão com o chão
     mov ax, [bird_y_posFinal]
     cmp ax, 200
-    jge ocorreuColisao
-ret
+    jge collision_exist
+ ret
 
-ocorreuColisao:
-    ;Reiniciando vairáveis
+collision_exist:
+    ; Reiniciando vairáveis
     mov ax, 120
     mov [bird_x], ax
 
@@ -275,28 +293,29 @@ ocorreuColisao:
     mov [bird_down], ax
     
     mov ax, 20
-    mov [bird_x_tamanho], ax
+    mov [bird_x_tam], ax
 
     mov ax, 20
-    mov [bird_y_tamanho], ax
+    mov [bird_y_tam], ax
 
     mov ax, 0
-    mov [bird_contador_velocidade], ax
+    mov [bird_count_speed], ax
 
     delay_fps
     call screen_clear 
-    jmp Menu 
-ret
+    jmp menu 
+ ret
 
-loopGame:;loop cx[xbarra,xbarra+3]
+loopGame:   ;loop cx[xbarra,xbarra+3]
     call scan_key
     call print_bird
-    call colisao
+    call collision
 
     delay_fps               ; delay de 1/30 segundos
-    call screen_clear       ; limpar tela a cada frame
- jmp loopGame
-.end_game_loop:
+    call screen_clear       ; limpar screen a cada frame
+    jmp loopGame
+
+    .end_game_loop:
 
 
 ;Inicio do programa
@@ -305,39 +324,38 @@ start:
     mov ax, 0
     mov ds, ax
 
-    ;Chamando a função Menu
-    call Menu
+    call menu
 
     jmp done
 
-Menu:
+menu:
     ;Carregando o video
     mov ah, 0
     mov al,12h
     int 10h
 
-    ;Mudando a cor do background para azul escuro
+    ;Mudando a cor do background para ciano
     mov ah, 0bh
     mov bh, 0
-    mov bl, 3
+    mov bl, [cyan]
     int 10h 
 
-    ;Colocando o Titulo
+    ;Colocando o titulo
 	mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
 	mov dh, 10   ;Linha
 	mov dl, 34   ;Coluna
 	int 10h
-    mov si, titulo
+    mov si, title
     call printString
 
-    ;Colocando a string jogar
+    ;Colocando a string play
     mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
 	mov dh, 13   ;Linha
 	mov dl, 36   ;Coluna
 	int 10h
-    mov si, jogar
+    mov si, playName
     call printString
     
     ;Colocando a string intrucoes
@@ -346,20 +364,20 @@ Menu:
 	mov dh, 16   ;Linha
 	mov dl, 32   ;Coluna
 	int 10h
-    mov si, instrucoes
+    mov si, instruction
     call printString
     
-    ;Colocando a string creditos
+    ;Colocando a string credits
     mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
 	mov dh, 19   ;Linha
 	mov dl, 34   ;Coluna
 	int 10h
-    mov si, creditos
+    mov si, credits
     call printString
     
     ;Selecionar a opcao do usuario
-    selecao:
+    selected_key:
         ;Receber a opção
         mov ah, 0
         int 16h
@@ -377,10 +395,10 @@ Menu:
         je credito
         
         ;Caso não seja nem '1' ou '2' ou '3' ele vai receber a string dnv
-        jne selecao
+        jne selected_key
      
 play:
-    call initvideo;set video mode 
+    call initvideo ;set video mode 
     mov al,3
 
     mov cx,160
@@ -390,7 +408,7 @@ play:
 
 ;Caso seja selecionado "Instruction (2)"
 instrucao:
-    ;Carregando o video para limpar a tela
+    ;Carregando o video para limpar a screen
     mov ah, 0
     mov al,12h
     int 10h
@@ -398,10 +416,10 @@ instrucao:
     ;Mudando a cor do background para ciano
     mov ah, 0bh
     mov bh, 0
-    mov bl, 3
+    mov bl, [cyan]
     int 10h 
 
-    ;Colocando o Titulo
+    ;Colocando o title
 	mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
 	mov dh, 5   ;Linha
@@ -443,7 +461,7 @@ instrucao:
 	mov dh, 23   ;Linha
 	mov dl, 29   ;Coluna
 	int 10h
-    mov si, creditos4
+    mov si, credits4
     call printString
 
 ESCinstrucao:    
@@ -453,12 +471,12 @@ ESCinstrucao:
 
     ;Apos receber 'Esc' volta pro menu
     cmp al, 27
-	je Menu
+	je menu
 	jne ESCinstrucao
 
 ;Caso seja selecionado "Credits (3)"
 credito:
-    ;Carregando o video para limpar a tela
+    ;Carregando o video para limpar a screen
     mov ah, 0
     mov al,12h
     int 10h
@@ -466,63 +484,63 @@ credito:
     ;Mudando a cor do background para ciano
     mov ah, 0bh
     mov bh, 0
-    mov bl, 3
+    mov bl, [cyan]
     int 10h 
 
-    ;Colocando o titulo
+    ;Colocando o title
 	mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
 	mov dh, 3    ;Linha
 	mov dl, 29   ;Coluna
 	int 10h
-    mov si, creditos
+    mov si, credits
     call printString
 
-    ;Colocando a string creditos1
+    ;Colocando a string credits1
     mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
 	mov dh, 7    ;Linha
 	mov dl, 10   ;Coluna
 	int 10h
-    mov si, creditos1
+    mov si, credits1
     call printString
 
-    ;Colocando a string creditos2
+    ;Colocando a string credits2
     mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
 	mov dh, 9    ;Linha
 	mov dl, 10   ;Coluna
 	int 10h
-    mov si, creditos2
+    mov si, credits2
     call printString
 
-    ;Colocando a string creditos3
+    ;Colocando a string credits3
     mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
 	mov dh, 11   ;Linha           
 	mov dl, 10   ;Coluna
 	int 10h
-    mov si, creditos3
+    mov si, credits3
     call printString
 
-	;Colocando a string creditos4
+	;Colocando a string credits4
     mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
 	mov dh, 20   ;Linha
 	mov dl, 10   ;Coluna
 	int 10h
-    mov si, creditos4
+    mov si, credits4
     call printString
 
-ESCcreditos:
+ESCcredits:
 	;Para receber o caractere
     mov ah, 0
     int 16h
 
     ;Apos receber 'Esc' volta pro menu
     cmp al, 27
-	je Menu
-	jne ESCcreditos
+	je menu
+	jne ESCcredits
 
 score:
 ret
