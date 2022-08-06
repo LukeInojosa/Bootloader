@@ -212,8 +212,7 @@ _print_rectangle:
                 sub di,[rec_width]  ; retorna pro começo
                 add di,[screen_width] ; linha de baixo
         .same_row:
-            lodsb
-            jmp .print_pixel   
+         jmp .print_pixel   
 
     .endprint_pixel:
         ret
@@ -265,7 +264,7 @@ print_bird:
     call update_birdSpeed
     call update_yBird_down
     mov dx, 1
-    print_rectangle [bird_x], [bird_y], 10, 20,flappy
+    print_rectangle [bird_x], [bird_y], 21, 20,flappy
  ret 
 
 ; funcoes do jogo
