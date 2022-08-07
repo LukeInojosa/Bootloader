@@ -6,8 +6,8 @@ videomem_addr dw 0a000h ;endereço da memoria de vídeo
 flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 0, 15, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 0, 7, 15, 15, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 0, 7, 15, 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 15, 15, 15, 15, 0, 14, 14, 14, 14, 0, 7, 7, 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 15, 15, 15, 15, 15, 0, 14, 14, 14, 14, 0, 7, 7, 15, 15, 0, 0, 0, 0, 0, 0, 0, 7, 15, 15, 15, 7, 0, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 14, 14, 14, 14, 0, 12, 12, 12, 12, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 14, 14, 14, 14, 14, 0, 12, 12, 12, 12, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 ;struct rectangle
- rec_X       dw 0
- rec_Y       dw 0
+ rec_X dw 0
+ rec_Y dw 0
  rec_width dw 0
  rec_height  dw 0
 
@@ -37,15 +37,17 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  amarelo db 14
  branco_intenso db 15
 
-; barra1 (x,y)
- x_barra1 dw 300    
- y_barra1 dw 120    
-
-; barra2 (x,y)
- x_barra2 dw 320
- y_barra2 dw 120
- speed_barra dw 4   ; velocidade da barra
-
+; barra_roof (x,y)
+ x_barra_roof dw 120    
+ y_barra_roof dw 0    
+ height_barra_roof dw 70
+ width_barra_roof dw 20
+; barra_floor (x,y)
+ x_barra_floor dw 120
+ y_barra_floor dw 130
+ speed_barra dw 4   
+ height_barra_floor dw 70
+ width_barra_floor dw 20
 ; Info do passaro
  bird_x dw 120
  bird_y dw 100
@@ -53,8 +55,8 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  bird_up dw 25
  bird_down dw 1
 
- bird_x_tam dw 20
- bird_y_tam dw 22
+ bird_width dw 21
+ bird_height dw 20
 
  bird_x_posFinal dw 140
  bird_y_posFinal dw 120
@@ -83,10 +85,10 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 ;funcoes para a barra:
     update_Xbarra:
         ;deslocando barra
-        mov ax,[x_barra1]
+        mov ax,[x_barra_roof]
         sub ax,[speed_barra]
         ;atualizando posição da barra
-        mov [x_barra1],ax
+        mov [x_barra_roof],ax
     ret
     update_Ybarra:  ;escolher um numero aleatorio entre 125 e 75
         mov bx,[pos_vet]
@@ -102,7 +104,7 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         add si,bx
         xor ax,ax
         lodsb
-        mov [y_barra1],ax
+        mov [y_barra_roof],ax
     ret
 ; funcoes/macros base
 %macro delay_fps 0
@@ -158,24 +160,24 @@ scan_key:
         je jump
     jump:
         call update_yBird_up
-ret
-
+    ret
 screen_clear:
     mov ax,13h
     int 10h
     ret
 
 ; funcoes/macros retangulo
-%macro print_rectangle 5 ;(x,y,width,height)[posicao do canto superior esquerdo,tam]
+%macro print_rectangle 4 ;(x,y,width,height)[posicao do canto superior esquerdo,tam]
      mov ax,%1
      mov bx,%2
      mov cx,%3
      mov dx,%4
-     mov si,%5
      mov [rec_X],ax     ;pos x
      mov [rec_Y],bx     ;pos y
      mov [rec_width],cx     ;width
      mov [rec_height],dx    ;height
+     cmp si, flappy
+     je _print_bird
     call _print_rectangle
 %endmacro
 
@@ -194,7 +196,43 @@ _print_rectangle:
 
     ; imprimindo pixels
     .print_pixel:       ; imprimir um pixel na memoria de video[320,200]
-        ; escrevendo cor no video na posição di
+        mov bl, [verde_claro] 
+        mov [es:di], bl  ; só di pode determinar deslocamento
+        ; atualizando posição a ser escrita 
+        inc cx ; contador da coluna
+        inc di
+        cmp cx,[rec_width]
+        jle .same_row
+            ; zera iterador da coluna
+            xor cx,cx 
+            inc dx
+            cmp dx,[rec_height]
+            jge .endprint_pixel
+                ;atualizar linha onde pixel sera impresso
+                dec di
+                sub di,[rec_width]  ; retorna pro começo
+                add di,[screen_width] ; linha de baixo
+        .same_row:
+         jmp .print_pixel   
+
+    .endprint_pixel:
+        ret
+
+_print_bird:
+    mov es,[videomem_addr]  ; colocando endereço da mem de video em extra segment
+    
+    mov bx,[screen_width]
+    mov ax,[rec_Y]
+    mul bx
+
+    add ax,[rec_X]
+
+    mov di,ax
+    
+    call clear_registers
+
+    ; imprimindo pixels
+    .print_pixel:       ; imprimir um pixel na memoria de video[320,200]
         lodsb 
         mov [es:di], al  ; só di pode determinar deslocamento
         ; atualizando posição a ser escrita 
@@ -263,15 +301,26 @@ inc_birdSpeed:
 print_bird:
     call update_birdSpeed
     call update_yBird_down
-    mov dx, 1
-    print_rectangle [bird_x], [bird_y], 21, 20,flappy
+    call clear_registers
+    mov si, flappy
+    print_rectangle [bird_x], [bird_y], [bird_width], [bird_height]
  ret 
 
 ; funcoes do jogo
-collision:    ; colisão com o chão
+collision:    
+    ; colisao com o chao
     mov ax, [bird_y_posFinal]
-    cmp ax, 200
+    cmp ax, [screen_height]
     jge collision_exist
+    ; colisao com barra_floor
+    mov bx, [screen_height]
+    sub bx, [height_barra_floor] ; subtraindo altura total - altura da barra
+    cmp ax, bx
+    jge collision_exist
+    ; colisão com barra_roof
+    mov ax, [bird_y]
+    cmp ax, [height_barra_roof]
+    jle collision_exist
  ret
 
 collision_exist:
@@ -292,10 +341,10 @@ collision_exist:
     mov [bird_down], ax
     
     mov ax, 20
-    mov [bird_x_tam], ax
+    mov [bird_width], ax
 
     mov ax, 20
-    mov [bird_y_tam], ax
+    mov [bird_height], ax
 
     mov ax, 0
     mov [bird_count_speed], ax
@@ -308,6 +357,8 @@ collision_exist:
 loopGame:   ;loop cx[xbarra,xbarra+3]
     call scan_key
     call print_bird
+    print_rectangle [x_barra_floor], [y_barra_floor], [width_barra_floor], [height_barra_floor]
+    print_rectangle [x_barra_roof], [y_barra_roof], [width_barra_roof], [height_barra_roof]
     call collision
 
     delay_fps               ; delay de 1/30 segundos
