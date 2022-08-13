@@ -82,6 +82,12 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  credits3 db 'Kaylane Lira <kgl>', 0
  credits4 db 'Press Esc to return', 0
 
+; número aleatório
+ current_number dw 3
+ cont_time_random dw 0
+ cont_parameter dw 83
+ random_temp dw 0
+
 ;funcoes para a barra:
     update_Xbarra:
         ;deslocando barra
@@ -339,13 +345,20 @@ collision_exist:
     mov ax, 120
     mov [bird_x], ax
 
+    ; call random_int
+    ; mov ax, [current_number]
+    ; mov [bird_y], ax
+
     mov ax, 100
     mov [bird_y], ax
 
-    mov ax, 140
-    mov [bird_x_posFinal], ax
+    ; mov ax, 140
+    ; mov [bird_x_posFinal], ax
 
     mov ax, 120
+    mov [bird_y_posFinal], ax
+
+    add ax, 20
     mov [bird_y_posFinal], ax
 
     mov ax, 1
@@ -360,15 +373,55 @@ collision_exist:
     mov ax, 0
     mov [bird_count_speed], ax
 
+
     delay_fps
     call screen_clear 
     jmp menu 
  ret
 
+; funcoes para número aleatório:
+random_int:
+    mov ax, [current_number]
+    mov bx, 15
+    mul bx
+    mov bx, 177
+    mul bx
+    mov bx, 73
+    idiv bx
+    mov [current_number], al
+    ret
+
+update_random_number:
+    mov ax, [cont_time_random]
+    add ax, 1
+    mov [cont_time_random], ax
+    cmp ax, [cont_parameter]
+    je new_random
+    ret
+
+new_random:
+    xor bx, bx
+    mov [cont_time_random], bx
+
+    call random_int
+    mov ax, [current_number]
+    mov [height_barra_roof], ax
+
+    add ax, 60
+    mov [y_barra_floor], ax
+    xor bx, bx
+    
+    add bx, 200
+    sub bx, ax
+    mov [height_barra_floor], bx
+
+    ret
+
 loopGame:   ;loop cx[xbarra,xbarra+3]
     call scan_key
     call print_bird
     call update_Xbarra
+    call update_random_number
     print_rectangle [x_barra_floor], [y_barra_floor], [width_barra_floor], [height_barra_floor]
     print_rectangle [x_barra_roof], [y_barra_roof], [width_barra_roof], [height_barra_roof]
     call collision
