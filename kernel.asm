@@ -38,12 +38,12 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  branco_intenso db 15
 
 ; barra_roof (x,y)
- x_barra_roof dw 120    
+ x_barra_roof dw 320
  y_barra_roof dw 0    
  height_barra_roof dw 70
  width_barra_roof dw 20
 ; barra_floor (x,y)
- x_barra_floor dw 120
+ x_barra_floor dw 320
  y_barra_floor dw 130
  speed_barra dw 4   
  height_barra_floor dw 70
@@ -58,7 +58,7 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  bird_width dw 21
  bird_height dw 20
 
- bird_x_posFinal dw 140
+ bird_x_posFinal dw 141
  bird_y_posFinal dw 120
 
  bird_max_speed dw 5     ; velocidade max do passaro
@@ -87,8 +87,13 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ;deslocando barra
         mov ax,[x_barra_roof]
         sub ax,[speed_barra]
+        cmp ax,0
+        jge .nao_volta
+        mov ax,320
+        .nao_volta:
         ;atualizando posição da barra
         mov [x_barra_roof],ax
+        mov [x_barra_floor],ax
     ret
     update_Ybarra:  ;escolher um numero aleatorio entre 125 e 75
         mov bx,[pos_vet]
@@ -308,19 +313,25 @@ print_bird:
 
 ; funcoes do jogo
 collision:    
-    ; colisao com o chao
-    mov ax, [bird_y_posFinal]
-    cmp ax, [screen_height]
+    mov ax,[bird_x]
+    add ax,10
+    mov bx,[bird_y]
+    add bx,10
+
+    mov cx,[x_barra_floor]
+    cmp ax,cx
+    jle .collision_not_exist
+    add cx,[width_barra_floor]
+    cmp ax,cx
+    jge .collision_not_exist
+    mov cx,[y_barra_floor]
+    cmp bx,cx
     jge collision_exist
-    ; colisao com barra_floor
-    mov bx, [screen_height]
-    sub bx, [height_barra_floor] ; subtraindo altura total - altura da barra
-    cmp ax, bx
-    jge collision_exist
-    ; colisão com barra_roof
-    mov ax, [bird_y]
-    cmp ax, [height_barra_roof]
+    mov cx,[y_barra_roof]
+    add cx,[height_barra_roof]
+    cmp bx,cx
     jle collision_exist
+ .collision_not_exist:
  ret
 
 collision_exist:
@@ -340,7 +351,7 @@ collision_exist:
     mov ax, 1
     mov [bird_down], ax
     
-    mov ax, 20
+    mov ax, 21
     mov [bird_width], ax
 
     mov ax, 20
@@ -357,6 +368,7 @@ collision_exist:
 loopGame:   ;loop cx[xbarra,xbarra+3]
     call scan_key
     call print_bird
+    call update_Xbarra
     print_rectangle [x_barra_floor], [y_barra_floor], [width_barra_floor], [height_barra_floor]
     print_rectangle [x_barra_roof], [y_barra_roof], [width_barra_roof], [height_barra_roof]
     call collision
