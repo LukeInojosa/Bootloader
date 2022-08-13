@@ -380,6 +380,7 @@ collision_exist:
 ; funcoes para número aleatório:
 random_int:
     mov ax, [current_number]
+    add ax, 7
     mov bx, 15
     mul bx
     mov bx, 177
