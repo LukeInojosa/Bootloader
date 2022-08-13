@@ -390,10 +390,8 @@ random_int:
     ret
 
 update_random_number:
-    mov ax, [cont_time_random]
-    add ax, 1
-    mov [cont_time_random], ax
-    cmp ax, [cont_parameter]
+    mov ax, 320
+    cmp ax, [x_barra_roof]
     je new_random
     ret
 
