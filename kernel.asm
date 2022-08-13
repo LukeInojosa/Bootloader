@@ -83,9 +83,9 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  credits4 db 'Press Esc to return', 0
 
 ; número aleatório
- current_number dw 3
+ current_number dw 103
  cont_time_random dw 0
- cont_parameter dw 83
+ cont_parameter dw 81
  random_temp dw 0
 
 ;funcoes para a barra:
@@ -342,18 +342,16 @@ collision:
 
 collision_exist:
     ; Reiniciando vairáveis
+    mov ax, 320
+    mov [x_barra_roof], ax
+    mov [x_barra_floor], ax
+
+
     mov ax, 120
     mov [bird_x], ax
 
-    ; call random_int
-    ; mov ax, [current_number]
-    ; mov [bird_y], ax
-
     mov ax, 100
     mov [bird_y], ax
-
-    ; mov ax, 140
-    ; mov [bird_x_posFinal], ax
 
     mov ax, 120
     mov [bird_y_posFinal], ax
@@ -386,9 +384,9 @@ random_int:
     mul bx
     mov bx, 177
     mul bx
-    mov bx, 73
-    idiv bx
-    mov [current_number], al
+    mov bx, 127
+    div bx
+    mov [current_number], dx
     ret
 
 update_random_number:
@@ -444,6 +442,11 @@ start:
     jmp done
 
 menu:
+
+    ;Colocando um número pseudoaleatório
+    int 0x1A
+    mov [current_number], dx
+
     ;Carregando o video
     mov ah, 0
     mov al,12h
@@ -490,6 +493,7 @@ menu:
 	int 10h
     mov si, credits
     call printString
+
     
     ;Selecionar a opcao do usuario
     selected_key:
