@@ -66,13 +66,14 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 ; Info tela inicial
  title db 'FLAPPLY BIRD', 0
- playName db 'Play (1)', 0
- instruction db 'Instruction (2)', 0
- credits db 'Credits (3)', 0
+ playName db 'Play', 0
+ instruction db 'Instruction', 0
+ credits db 'Credits', 0
+ arrow db '>', 0
 
 ; instrucoes
  inst0 db 'INSTRUCOES', 0
- inst1 db '1. Aperte espaco para nao cair', 0
+ inst1 db '1. Aperte espaco para impulsionar', 0
  inst2 db '2. Nao encoste no chao', 0
  inst3 db '3. Nao encoste nos tubos',0 
 
@@ -88,6 +89,61 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  cont_parameter dw 81
  random_temp dw 0
 
+; funcoes para número aleatório:
+random_int:
+    mov ax, [current_number]
+    add ax, 7
+    mov bx, 15
+    mul bx
+    mov bx, 177
+    mul bx
+    mov bx, 127
+    div bx
+    mov [current_number], dx
+    ret
+
+update_random_number:
+    mov ax, 320
+    cmp ax, [x_barra_roof]
+    jne .nada
+    call new_random
+    .nada
+    ret
+
+new_random:
+    xor bx, bx
+    mov [cont_time_random], bx
+
+    call random_int
+    mov ax, [current_number]
+    mov [height_barra_roof], ax
+
+    add ax, 60
+    mov [y_barra_floor], ax
+    xor bx, bx
+    
+    add bx, 200
+    sub bx, ax
+    mov [height_barra_floor], bx
+    ret
+
+; funcoes menu
+set_videomode:
+  mov ah, 0 ;escolhe modo video
+  mov al, 13h ;modo VGA
+  int 10h
+
+  mov ah, 0xb ;escolhe cor da tela
+  mov bh, 0
+  mov bl, [azul_claro] ;cor da tela
+  int 10h
+
+  mov ah, 0xe ;escolhe cor da letra
+  mov bh, 0   ;numero da pagina
+  mov bl, [preto] ;cor da letra
+
+  ret
+
 ;funcoes para a barra:
     update_Xbarra:
         ;deslocando barra
@@ -97,10 +153,10 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         jge .nao_volta
         mov ax,320
         .nao_volta:
-        ;atualizando posição da barra
-        mov [x_barra_roof],ax
-        mov [x_barra_floor],ax
-    ret
+            ;atualizando posição da barra
+            mov [x_barra_roof],ax
+            mov [x_barra_floor],ax
+        ret
     update_Ybarra:  ;escolher um numero aleatorio entre 125 e 75
         mov bx,[pos_vet]
         inc bx
@@ -109,20 +165,20 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         xor bx,bx
 
         .atualizar_y:
+            mov [pos_vet],bx
+            mov si,vet_heights
+            add si,bx
+            xor ax,ax
+            lodsb
+            mov [y_barra_roof],ax
+        ret
 
-        mov [pos_vet],bx
-        mov si,vet_heights
-        add si,bx
-        xor ax,ax
-        lodsb
-        mov [y_barra_roof],ax
-    ret
 ; funcoes/macros base
 %macro delay_fps 0
     pusha
     mov ah, 86h ; função delay da bios
     mov cx, 0 ; high word
-    mov dx, 16000 ; low word
+    mov dx,17000  ; low word
     int 15h
     popa
 %endmacro
@@ -134,12 +190,6 @@ clear_registers:
     xor dx,dx  
  ret
 
-initvideo:
-    mov al, 13h
-    mov ah, 0
-    int 10h
-    ret
-
 writechar:
     mov ah, 0xe
     mov bx, 3
@@ -150,7 +200,7 @@ printString:
     lodsb
     mov ah, 0xe
     mov bh, 0
-    mov bl, 0xf
+    mov bl, [amarelo]
     int 10h
 
     cmp al, 0
@@ -172,6 +222,7 @@ scan_key:
     jump:
         call update_yBird_up
     ret
+
 screen_clear:
     mov ax,13h
     int 10h
@@ -229,7 +280,8 @@ _print_rectangle:
     .endprint_pixel:
         ret
 
-_print_bird:
+; funcoes do passaro
+_print_bird: ; auxilia na hora de printar passaro no jogo
     mov es,[videomem_addr]  ; colocando endereço da mem de video em extra segment
     
     mov bx,[screen_width]
@@ -266,7 +318,6 @@ _print_bird:
     .endprint_pixel:
         ret
 
-; funcoes do passaro
 update_yBird_up:
     mov ax, [bird_y]
     sub ax, [bird_up]
@@ -309,7 +360,7 @@ inc_birdSpeed:
     ret
  ret
 
-print_bird:
+print_bird: ; printa no jogo
     call update_birdSpeed
     call update_yBird_down
     call clear_registers
@@ -377,42 +428,235 @@ collision_exist:
     jmp menu 
  ret
 
-; funcoes para número aleatório:
-random_int:
-    mov ax, [current_number]
-    add ax, 7
-    mov bx, 15
-    mul bx
-    mov bx, 177
-    mul bx
-    mov bx, 127
-    div bx
-    mov [current_number], dx
+;Inicio do programa
+start:
+    call clear_registers
+    call menu
+
+    jmp done
+
+menu:
+    ;Colocando um número pseudoaleatório
+     int 0x1A
+     mov [current_number], dx
+
+    call set_videomode
+    call printa_titulo
+    call print_birdMenu1
+    call print_birdMenu2
+    call print_barrasMenu
+    call option1
+
+    jmp $
+
+ print_birdMenu1:
+    call clear_registers
+    mov si, flappy
+    print_rectangle 260, 90, [bird_width], [bird_height]
     ret
 
-update_random_number:
-    mov ax, 320
-    cmp ax, [x_barra_roof]
-    je new_random
+ print_birdMenu2:
+    call clear_registers
+    mov si, flappy
+    print_rectangle 40, 90, [bird_width], [bird_height]
     ret
 
-new_random:
-    xor bx, bx
-    mov [cont_time_random], bx
+ print_barrasMenu:
+    print_rectangle 260, 130, [width_barra_floor], 70
+    print_rectangle 260, 0, [width_barra_roof], 70
+    print_rectangle 40, 130, [width_barra_floor], 70
+    print_rectangle 40, 0, [width_barra_roof], 70
 
-    call random_int
-    mov ax, [current_number]
-    mov [height_barra_roof], ax
+ printa_titulo:
+  mov ah, 02h
+  mov dh, 5    ;row
+  mov dl, 14     ;column
+  int 10h
 
-    add ax, 60
-    mov [y_barra_floor], ax
-    xor bx, bx
-    
-    add bx, 200
-    sub bx, ax
-    mov [height_barra_floor], bx
+  mov si, title
+  call printString
+  ret
 
+ apaga_arrow_down:
+  mov ah,02h
+  mov dh,14    ;row
+  mov dl,13     ;column
+  mov bl,[branco_intenso]
+  int 10h
+
+  mov al, ' '
+  call putchar
+
+
+  mov ah,02h
+  mov dh,14    ;row
+  mov dl,15     ;column
+  mov bl,[amarelo]
+  int 10h
+
+  mov si, credits
+  call printf
+  ret
+
+ apaga_arrow_middle:
+  mov ah,02h
+  mov dh,12    ;row
+  mov dl,13     ;column
+  mov bl,[branco_intenso]
+  int 10h
+
+  mov al, ' '
+  call putchar
+
+
+  mov ah,02h
+  mov dh,12    ;row
+  mov dl,15     ;column
+  mov bl,[amarelo]
+  int 10h
+
+  mov si, instruction
+  call printf
+  ret
+
+ apaga_arrow_up:
+  mov ah,02h
+  mov dh,10    ;row
+  mov dl,13     ;column
+  mov bl,[branco_intenso]
+  int 10h
+
+  mov al, ' '
+  call putchar
+
+  mov ah,02h
+  mov dh,10    ;row
+  mov dl,15     ;column
+  mov bl, [amarelo]
+  int 10h
+
+  mov si, playName
+  call printf
+  ret
+
+ printa_arrow_up:
+  mov ah,02h
+  mov dh,10    ;row
+  mov dl,13     ;column
+  mov bl,[branco_intenso]
+  int 10h
+
+  mov si, arrow
+  call printf
+
+  mov ah,02h
+  mov dh,10    ;row
+  mov dl,15     ;column
+  mov bl,[verde]
+  int 10h
+
+  mov si, playName
+  call printf
+  ret
+
+ printa_arrow_middle:
+    mov ah,02h
+    mov dh,12    ;row
+    mov dl,13     ;column
+    mov bl,[branco_intenso]
+    int 10h
+
+    mov si, arrow
+    call printf
+
+    mov ah,02h
+    mov dh,12    ;row
+    mov dl,15     ;column
+    mov bl,[verde]
+    int 10h
+
+    mov si, instruction
+    call printf
     ret
+
+ printa_arrow_down:
+  mov ah,02h
+  mov dh,14    ;row
+  mov dl,13     ;column
+  mov bl,[branco_intenso]
+  int 10h
+
+  mov si, arrow
+  call printf
+
+  mov ah,02h
+  mov dh,14    ;row
+  mov dl,15     ;column
+  mov bl,[verde]
+  int 10h
+
+  mov si, credits
+  call printf
+  ret
+
+ printf:
+  lodsb
+  cmp al, 0
+  je end
+  mov ah, 0eh
+  int 10h
+  jmp printf
+  ret
+
+ getchar:
+  mov ah, 00h
+  int 16h
+  ret
+
+ putchar:
+  mov ah, 0eh ;modo de imprmir na tela
+  int 10h ;imprime o que tá em al
+  ret
+
+ end: ret
+
+ option1:
+  call apaga_arrow_down
+  call apaga_arrow_middle
+  call printa_arrow_up
+  call getchar
+  cmp al, 13
+  je play
+  cmp al, 's'
+  je option2
+  jmp option1
+  ret
+
+ option2:
+  call apaga_arrow_up
+  call apaga_arrow_down
+  call printa_arrow_middle
+  call getchar
+  cmp al, 13
+  je instrucao
+  cmp al, 'w'
+  je option1
+  cmp al, 's'
+  je option3
+  jmp option2
+  ret
+     
+ option3:
+  call apaga_arrow_up
+  call apaga_arrow_middle
+  call printa_arrow_down
+  call getchar
+  cmp al, 13
+  je credito
+  cmp al, 'w'
+  je option2
+  jmp option3
+  ret
 
 loopGame:   ;loop cx[xbarra,xbarra+3]
     call scan_key
@@ -429,94 +673,8 @@ loopGame:   ;loop cx[xbarra,xbarra+3]
 
     .end_game_loop:
 
-
-;Inicio do programa
-start:
-    ;Zerando os registradores
-    mov ax, 0
-    mov ds, ax
-
-    call menu
-
-    jmp done
-
-menu:
-
-    ;Colocando um número pseudoaleatório
-    int 0x1A
-    mov [current_number], dx
-
-    ;Carregando o video
-    mov ah, 0
-    mov al,12h
-    int 10h
-
-    ;Mudando a cor do background para ciano
-    mov ah, 0bh
-    mov bh, 0
-    mov bl, [cyan]
-    int 10h 
-
-    ;Colocando o titulo
-	mov ah, 02h  ;Setando o cursor
-	mov bh, 0    ;Pagina 0
-	mov dh, 10   ;Linha
-	mov dl, 34   ;Coluna
-	int 10h
-    mov si, title
-    call printString
-
-    ;Colocando a string play
-    mov ah, 02h  ;Setando o cursor
-	mov bh, 0    ;Pagina 0
-	mov dh, 13   ;Linha
-	mov dl, 36   ;Coluna
-	int 10h
-    mov si, playName
-    call printString
-    
-    ;Colocando a string intrucoes
-    mov ah, 02h  ;Setando o cursor
-	mov bh, 0    ;Pagina 0
-	mov dh, 16   ;Linha
-	mov dl, 32   ;Coluna
-	int 10h
-    mov si, instruction
-    call printString
-    
-    ;Colocando a string credits
-    mov ah, 02h  ;Setando o cursor
-	mov bh, 0    ;Pagina 0
-	mov dh, 19   ;Linha
-	mov dl, 34   ;Coluna
-	int 10h
-    mov si, credits
-    call printString
-
-    
-    ;Selecionar a opcao do usuario
-    selected_key:
-        ;Receber a opção
-        mov ah, 0
-        int 16h
-        
-        ;Comparando com '1'
-        cmp al, 49
-        je play
-        
-        ;Comparando com '2'
-        cmp al, 50
-        je instrucao
-        
-        ;Comparando com '3'
-        cmp al, 51
-        je credito
-        
-        ;Caso não seja nem '1' ou '2' ou '3' ele vai receber a string dnv
-        jne selected_key
-     
 play:
-    call initvideo ;set video mode 
+    call set_videomode ;set video mode 
     mov al,3
 
     mov cx,160
@@ -524,7 +682,7 @@ play:
     call loopGame
     jmp done
 
-;Caso seja selecionado "Instruction (2)"
+;Caso seja selecionado "Instruction"
 instrucao:
     ;Carregando o video para limpar a screen
     mov ah, 0
@@ -534,7 +692,7 @@ instrucao:
     ;Mudando a cor do background para ciano
     mov ah, 0bh
     mov bh, 0
-    mov bl, [cyan]
+    mov bl, [preto]
     int 10h 
 
     ;Colocando o title
@@ -602,7 +760,7 @@ credito:
     ;Mudando a cor do background para ciano
     mov ah, 0bh
     mov bh, 0
-    mov bl, [cyan]
+    mov bl, [preto]
     int 10h 
 
     ;Colocando o title
@@ -659,9 +817,6 @@ ESCcredits:
     cmp al, 27
 	je menu
 	jne ESCcredits
-
-score:
-ret
 
 done:
     jmp $
