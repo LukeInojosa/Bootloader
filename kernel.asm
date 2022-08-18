@@ -296,7 +296,7 @@ set_videomode:
     pusha
     mov ah, 86h ; função delay da bios
     mov cx, 0 ; high word
-    mov dx, 16000 ; low word
+    mov dx, 18000 ; low word
     int 15h
     popa
 %endmacro
@@ -792,7 +792,14 @@ menu:
   je option2
   jmp option3
   ret
-
+clear_s:
+    mov ax,[videomem_addr]
+    mov es, ax             ; Beginning of VGA memory in segment 0xA000
+    mov ax, 0x00           ; Set the color to clear with 0x76 (green?) 0x00=black
+    xor di,di              ; Destination address set to 0
+    mov cx, (320*200)/2
+    rep stosd
+    ret
 loopGame:   ;loop cx[xbarra,xbarra+3]
     call scan_key
     call print_bird
@@ -806,7 +813,7 @@ loopGame:   ;loop cx[xbarra,xbarra+3]
 
     call pontos
     delay_fps               ; delay de 1/30 segundos
-    call screen_clear       ; limpar screen a cada frame
+    call clear_s       ; limpar screen a cada frame
     jmp loopGame
 
     .end_game_loop:
