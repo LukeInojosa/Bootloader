@@ -42,6 +42,7 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  y_barra_roof dw 0    
  height_barra_roof dw 70
  width_barra_roof dw 20
+
 ; barra_floor (x,y)
  x_barra_floor dw 320
  y_barra_floor dw 130
@@ -50,10 +51,10 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  width_barra_floor dw 20
 
 ; chão
-    x_chao dw 0
-    y_chao dw 193
-    tam_chao_x dw 320
-    tam_chao_y dw 7
+ x_chao dw 0
+ y_chao dw 193
+ tam_chao_x dw 320
+ tam_chao_y dw 7
 
 ; Info do passaro
  bird_x dw 120
@@ -72,8 +73,7 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  bird_count_speed dw 0   ; contador de velocidade do passaro
 
 ; Pontos
-    pontuacao dw 0
-    stringPontos db ''
+ pontuacao dw 48
 
 ; Info tela inicial
  title db 'FLAPPLY BIRD', 0
@@ -137,31 +137,28 @@ new_random:
 
     ret
 
+
 pontos: 
+    mov si, pontuacao
+    call stoi
+
     xor bx, bx
     
-    mov ax, x_barra_roof
-    cmp ax, 110
+    mov ax, [x_barra_roof]
+    cmp ax, 100
     jne .nada
         inc word[pontuacao]
     .nada:
 
     xor ax, ax
 
-    mov ax, [pontuacao]
-    mov di, stringPontos
-
+    mov di, pontuacao
     call tostring
-    call print_pontuacao
 
-    ret
+    mov si, pontuacao
+    call print_string_pontos
 
 
-print_pontuacao: 
-    mov si, stringPontos
-    mov bx, stringPontos
-    mov ax, stringPontos
-    call printStringPontos
     ret
 
 tostring:
@@ -189,7 +186,6 @@ tostring:
     .done1:
         mov al, 0
         stosb
-        mov si, stringPontos
         call reverse
         ret
 
@@ -218,17 +214,36 @@ reverse:
         .endloop3:
         ret
 
-printStringPontos:
-    lodsb
-    mov ah, 0xe
-    mov bh, 0
-    mov bl, [amarelo]
-    int 10h
+stoi:
+    xor cx, cx
+    xor ax, ax
+    .loop:
+        push ax     ; coloca na pilha
+        lodsb
+        mov cl, al
+        pop ax      ; tira da pilha
+        cmp cl, 0   ; checando se e eof
+        je .endloop
 
-    cmp al, 0
-    jne printStringPontos
+        sub cl, 48      
+        mov bx, 10
+        mul bx      
+        add ax, cx     
+        jmp .loop
+    
+    .endloop:
+        ret
+
+print_string_pontos:
+    mov ah, 02h  ;Setando o cursor
+	;mov bh, 0    ;Pagina 0
+    ;mov bl, 7
+	mov dh, 7    ;Linha
+	mov dl, 10   ;Coluna
+	int 10h
+    mov si, pontuacao
+    call printString
     ret
-
 
 ; funcoes menu
 set_videomode:
@@ -299,6 +314,16 @@ writechar:
     int 10h
     ret
 
+getchar:
+  mov ah, 00h
+  int 16h
+  ret
+
+putchar:
+  mov ah, 0eh ;modo de imprmir na tela
+  int 10h ;imprime o que tá em al
+  ret
+
 printString:
     lodsb
     mov ah, 0xe
@@ -321,9 +346,9 @@ scan_key:
                 int 16h
                
         cmp al, 32
-        je jump
-    jump:
+        jne .nada2
         call update_yBird_up
+    .nada2:
     ret
 
 screen_clear:
@@ -423,6 +448,10 @@ _print_bird: ; auxilia na hora de printar passaro no jogo
 
 update_yBird_up:
     mov ax, [bird_y]
+    cmp ax, 25
+    jle .limite
+
+    mov ax, [bird_y]
     sub ax, [bird_up]
     mov [bird_y], ax
 
@@ -432,6 +461,15 @@ update_yBird_up:
 
     mov ax, 1
     mov [bird_down], ax
+    ret
+    
+    .limite:
+    mov ax, 0
+    mov [bird_y], ax
+
+    mov ax, 20
+    mov [bird_y_posFinal], ax
+
     ret
 
 update_yBird_down:
@@ -569,10 +607,10 @@ menu:
     ret
 
  print_barrasMenu:
-    print_rectangle 260, [y_barra_floor], [width_barra_floor], [height_barra_floor]
-    print_rectangle 260, [y_barra_roof], [width_barra_roof], [height_barra_roof]
-    print_rectangle 40, [y_barra_floor], [width_barra_floor], [height_barra_floor]
-    print_rectangle 40, [y_barra_roof], [width_barra_roof], [height_barra_roof]
+    print_rectangle 260, 130, [width_barra_floor], 70
+    print_rectangle 260, 0, [width_barra_roof], 70
+    print_rectangle 40, 130, [width_barra_floor], 70
+    print_rectangle 40, 0, [width_barra_roof], 70
 
  printa_titulo:
   mov ah, 02h
@@ -715,16 +753,6 @@ menu:
   jmp printf
   ret
 
- getchar:
-  mov ah, 00h
-  int 16h
-  ret
-
- putchar:
-  mov ah, 0eh ;modo de imprmir na tela
-  int 10h ;imprime o que tá em al
-  ret
-
  end: ret
 
  option1:
@@ -771,13 +799,12 @@ loopGame:   ;loop cx[xbarra,xbarra+3]
     call update_Xbarra
     call update_random_number
 
-    ;call pontos
-
     print_rectangle [x_barra_floor], [y_barra_floor], [width_barra_floor], [height_barra_floor]
     print_rectangle [x_barra_roof], [y_barra_roof], [width_barra_roof], [height_barra_roof]
     print_rectangle [x_chao], [y_chao], [tam_chao_x], [tam_chao_y]
     call collision
 
+    call pontos
     delay_fps               ; delay de 1/30 segundos
     call screen_clear       ; limpar screen a cada frame
     jmp loopGame
