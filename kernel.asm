@@ -48,6 +48,13 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  speed_barra dw 4   
  height_barra_floor dw 70
  width_barra_floor dw 20
+
+; chão
+    x_chao dw 0
+    y_chao dw 193
+    tam_chao_x dw 320
+    tam_chao_y dw 7
+
 ; Info do passaro
  bird_x dw 120
  bird_y dw 100
@@ -63,6 +70,10 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
  bird_max_speed dw 5     ; velocidade max do passaro
  bird_count_speed dw 0   ; contador de velocidade do passaro
+
+; Pontos
+    pontuacao dw 0
+    stringPontos db ''
 
 ; Info tela inicial
  title db 'FLAPPLY BIRD', 0
@@ -93,9 +104,9 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 random_int:
     mov ax, [current_number]
     add ax, 7
-    mov bx, 15
+    mov bx, 19
     mul bx
-    mov bx, 177
+    mov bx, 27
     mul bx
     mov bx, 127
     div bx
@@ -125,6 +136,99 @@ new_random:
     mov [height_barra_floor], bx
 
     ret
+
+pontos: 
+    xor bx, bx
+    
+    mov ax, x_barra_roof
+    cmp ax, 110
+    jne .nada
+        inc word[pontuacao]
+    .nada:
+
+    xor ax, ax
+
+    mov ax, [pontuacao]
+    mov di, stringPontos
+
+    call tostring
+    call print_pontuacao
+
+    ret
+
+
+print_pontuacao: 
+    mov si, stringPontos
+    mov bx, stringPontos
+    mov ax, stringPontos
+    call printStringPontos
+    ret
+
+tostring:
+    push di
+    
+    .loop1:
+        cmp ax, 0
+        je .endloop1
+        xor dx, dx
+        mov bx, 10
+        div bx
+        xchg ax, dx
+        add ax, 48
+        stosb
+        xchg ax, dx
+        jmp .loop1
+
+    .endloop1:
+        pop si
+        cmp si, di
+        jne .done1
+        mov al, 48
+        stosb
+
+    .done1:
+        mov al, 0
+        stosb
+        mov si, stringPontos
+        call reverse
+        ret
+
+reverse:
+    mov di, si
+    xor cx, cx
+
+    .loop2:
+        lodsb
+        cmp al, 0
+        je .endloop2
+        inc cl
+        push ax
+        jmp .loop2
+
+    .endloop2:
+
+    .loop3:
+        cmp cl, 0
+        je .endloop3
+        dec cl
+        pop ax
+        stosb
+        jmp .loop3
+
+        .endloop3:
+        ret
+
+printStringPontos:
+    lodsb
+    mov ah, 0xe
+    mov bh, 0
+    mov bl, [amarelo]
+    int 10h
+
+    cmp al, 0
+    jne printStringPontos
+    ret
+
 
 ; funcoes menu
 set_videomode:
@@ -374,6 +478,9 @@ collision:
     mov bx,[bird_y]
     add bx,10
 
+    cmp bx, 200
+    jge collision_exist
+
     mov cx,[x_barra_floor]
     cmp ax,cx
     jle .collision_not_exist
@@ -444,7 +551,8 @@ menu:
     call print_birdMenu1
     call print_birdMenu2
     call print_barrasMenu
-    call option1
+    call option1   
+
 
     jmp $
 
@@ -662,8 +770,12 @@ loopGame:   ;loop cx[xbarra,xbarra+3]
     call print_bird
     call update_Xbarra
     call update_random_number
+
+    ;call pontos
+
     print_rectangle [x_barra_floor], [y_barra_floor], [width_barra_floor], [height_barra_floor]
     print_rectangle [x_barra_roof], [y_barra_roof], [width_barra_roof], [height_barra_roof]
+    print_rectangle [x_chao], [y_chao], [tam_chao_x], [tam_chao_y]
     call collision
 
     delay_fps               ; delay de 1/30 segundos
