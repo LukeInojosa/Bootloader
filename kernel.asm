@@ -72,8 +72,8 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  bird_count_speed dw 0   ; contador de velocidade do passaro
 
 ; Pontos
-    pontuacao dw 0
-    stringPontos db '0', 0
+    pontuacao  db '0', 0
+    ;stringPontos times 3 db 0
 
 ; Info tela inicial
  title db 'FLAPPLY BIRD', 0
@@ -138,24 +138,27 @@ new_random:
     ret
 
 pontos: 
+    mov si, pontuacao
+    call stoi
+
     xor bx, bx
     
-    mov ax, x_barra_roof
-    cmp ax, 110
+    mov ax, [x_barra_roof]
+    cmp ax, 100
     jne .nada
         inc word[pontuacao]
     .nada:
 
     xor ax, ax
 
-    mov ax, [pontuacao]
-    mov di, stringPontos
-
+    mov di, pontuacao
     call tostring
+
+    mov si, pontuacao
     call print_string_pontos
 
-    ret
 
+    ret
 
 tostring:
     push di
@@ -182,7 +185,6 @@ tostring:
     .done1:
         mov al, 0
         stosb
-        mov si, stringPontos
         call reverse
         ret
 
@@ -211,13 +213,34 @@ reverse:
         .endloop3:
         ret
 
+stoi:
+    xor cx, cx
+    xor ax, ax
+    .loop:
+        push ax     ; coloca na pilha
+        lodsb
+        mov cl, al
+        pop ax      ; tira da pilha
+        cmp cl, 0   ; checando se e eof
+        je .endloop
+
+        sub cl, 48      
+        mov bx, 10
+        mul bx      
+        add ax, cx     
+        jmp .loop
+    
+    .endloop:
+        ret
+
 print_string_pontos:
     mov ah, 02h  ;Setando o cursor
-	mov bh, 0    ;Pagina 0
+	;mov bh, 0    ;Pagina 0
+    ;mov bl, 7
 	mov dh, 7    ;Linha
 	mov dl, 10   ;Coluna
 	int 10h
-    mov si, stringPontos
+    mov si, pontuacao
     call printString
     ret
 
@@ -762,13 +785,12 @@ loopGame:   ;loop cx[xbarra,xbarra+3]
     call update_Xbarra
     call update_random_number
 
-    call pontos
-
     print_rectangle [x_barra_floor], [y_barra_floor], [width_barra_floor], [height_barra_floor]
     print_rectangle [x_barra_roof], [y_barra_roof], [width_barra_roof], [height_barra_roof]
     print_rectangle [x_chao], [y_chao], [tam_chao_x], [tam_chao_y]
     call collision
 
+    call pontos
     delay_fps               ; delay de 1/30 segundos
     call screen_clear       ; limpar screen a cada frame
     jmp loopGame
