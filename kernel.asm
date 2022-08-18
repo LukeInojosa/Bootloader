@@ -5,21 +5,21 @@ videomem_addr dw 0a000h ;endereço da memoria de vídeo
 ; flappy img
 flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 0, 15, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 0, 7, 15, 15, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 0, 7, 15, 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 15, 15, 15, 15, 0, 14, 14, 14, 14, 0, 7, 7, 15, 0, 15, 0, 0, 0, 0, 0, 0, 0, 15, 15, 15, 15, 15, 0, 14, 14, 14, 14, 0, 7, 7, 15, 15, 0, 0, 0, 0, 0, 0, 0, 7, 15, 15, 15, 7, 0, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 14, 14, 14, 14, 0, 12, 12, 12, 12, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 14, 14, 14, 14, 14, 0, 12, 12, 12, 12, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-;struct rectangle
+; struct rectangle
  rec_X dw 0
  rec_Y dw 0
  rec_width dw 0
  rec_height  dw 0
 
-;info screen
+; info screen
  screen_width dw 320
  screen_height dw 200
 
-;vetor de alturas das barras
+; vetor de alturas das barras
  vet_heights db 75,105,87,103,106,96,105,121,104,75,125
  pos_vet db 0
 
-;cores de pixel
+; cores de pixel
  preto db 0
  azul db 1
  verde db 2
@@ -42,6 +42,7 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  y_barra_roof dw 0    
  height_barra_roof dw 70
  width_barra_roof dw 20
+
 ; barra_floor (x,y)
  x_barra_floor dw 320
  y_barra_floor dw 130
@@ -50,10 +51,10 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
  width_barra_floor dw 20
 
 ; chão
-    x_chao dw 0
-    y_chao dw 193
-    tam_chao_x dw 320
-    tam_chao_y dw 7
+ x_chao dw 0
+ y_chao dw 193
+ tam_chao_x dw 320
+ tam_chao_y dw 7
 
 ; Info do passaro
  bird_x dw 120
@@ -70,10 +71,6 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
  bird_max_speed dw 5     ; velocidade max do passaro
  bird_count_speed dw 0   ; contador de velocidade do passaro
-
-; Pontos
-    pontuacao  db '0', 0
-    ;stringPontos times 3 db 0
 
 ; Info tela inicial
  title db 'FLAPPLY BIRD', 0
@@ -136,159 +133,34 @@ new_random:
     mov [height_barra_floor], bx
 
     ret
-
-pontos: 
-    mov si, pontuacao
-    call stoi
-
-    xor bx, bx
-    
-    mov ax, [x_barra_roof]
-    cmp ax, 100
-    jne .nada
-        inc word[pontuacao]
-    .nada:
-
-    xor ax, ax
-
-    mov di, pontuacao
-    call tostring
-
-    mov si, pontuacao
-    call print_string_pontos
-
-
-    ret
-
-tostring:
-    push di
-    
-    .loop1:
-        cmp ax, 0
-        je .endloop1
-        xor dx, dx
-        mov bx, 10
-        div bx
-        xchg ax, dx
-        add ax, 48
-        stosb
-        xchg ax, dx
-        jmp .loop1
-
-    .endloop1:
-        pop si
-        cmp si, di
-        jne .done1
-        mov al, 48
-        stosb
-
-    .done1:
-        mov al, 0
-        stosb
-        call reverse
-        ret
-
-reverse:
-    mov di, si
-    xor cx, cx
-
-    .loop2:
-        lodsb
-        cmp al, 0
-        je .endloop2
-        inc cl
-        push ax
-        jmp .loop2
-
-    .endloop2:
-
-    .loop3:
-        cmp cl, 0
-        je .endloop3
-        dec cl
-        pop ax
-        stosb
-        jmp .loop3
-
-        .endloop3:
-        ret
-
-stoi:
-    xor cx, cx
-    xor ax, ax
-    .loop:
-        push ax     ; coloca na pilha
-        lodsb
-        mov cl, al
-        pop ax      ; tira da pilha
-        cmp cl, 0   ; checando se e eof
-        je .endloop
-
-        sub cl, 48      
-        mov bx, 10
-        mul bx      
-        add ax, cx     
-        jmp .loop
-    
-    .endloop:
-        ret
-
-print_string_pontos:
-    mov ah, 02h  ;Setando o cursor
-	;mov bh, 0    ;Pagina 0
-    ;mov bl, 7
-	mov dh, 7    ;Linha
-	mov dl, 10   ;Coluna
-	int 10h
-    mov si, pontuacao
-    call printString
-    ret
-
-; funcoes menu
-set_videomode:
-  mov ah, 0 ;escolhe modo video
-  mov al, 13h ;modo VGA
-  int 10h
-
-  mov ah, 0xb ;escolhe cor da tela
-  mov bh, 0
-  mov bl, [azul_claro] ;cor da tela
-  int 10h
-
-  mov ah, 0xe ;escolhe cor da letra
-  mov bh, 0   ;numero da pagina
-  mov bl, [preto] ;cor da letra
-
-  ret
-
 ;funcoes para a barra:
-    update_Xbarra:
-        ;deslocando barra
-        mov ax,[x_barra_roof]
-        sub ax,[speed_barra]
-        cmp ax,0
-        jge .nao_volta
-        mov ax,320
-        .nao_volta:
-            ;atualizando posição da barra
-            mov [x_barra_roof],ax
-            mov [x_barra_floor],ax
-        ret
-    update_Ybarra:  ;escolher um numero aleatorio entre 125 e 75
-        mov bx,[pos_vet]
-        inc bx
-        cmp bx,11
-        jne .atualizar_y
-        xor bx,bx
+update_Xbarra:
+    ;deslocando barra
+    mov ax,[x_barra_roof]
+    sub ax,[speed_barra]
+    cmp ax,0
+    jge .nao_volta
+    mov ax,320
+    .nao_volta:
+        ;atualizando posição da barra
+        mov [x_barra_roof],ax
+        mov [x_barra_floor],ax
+    ret
 
-        .atualizar_y:
-            mov [pos_vet],bx
-            mov si,vet_heights
-            add si,bx
-            xor ax,ax
-            lodsb
-            mov [y_barra_roof],ax
-        ret
+update_Ybarra:  ;escolher um numero aleatorio entre 125 e 75
+    mov bx,[pos_vet]
+    inc bx
+    cmp bx,11
+    jne .atualizar_y
+    xor bx,bx
+    .atualizar_y:
+        mov [pos_vet],bx
+        mov si,vet_heights
+        add si,bx
+        xor ax,ax
+        lodsb
+        mov [y_barra_roof],ax
+    ret
 
 ; funcoes/macros base
 %macro delay_fps 0
@@ -299,7 +171,10 @@ set_videomode:
     int 15h
     popa
 %endmacro
-
+screen_clear:
+    mov ax,13h
+    int 10h
+    ret
 clear_registers:
     xor ax,ax
     xor bx,bx
@@ -307,44 +182,38 @@ clear_registers:
     xor dx,dx  
  ret
 
-writechar:
-    mov ah, 0xe
-    mov bx, 3
-    int 10h
-    ret
+getchar:
+  mov ah, 00h
+  int 16h
+  ret
+
+putchar:
+  mov ah, 0eh ; modo de imprimir na tela
+  int 10h ; imprime o que tá em al
+  ret
 
 printString:
     lodsb
     mov ah, 0xe
     mov bh, 0
-    mov bl, [amarelo]
+    mov bl, [amarelo]   ; cor da string
     int 10h
 
-    cmp al, 0
+    cmp al, 0   ; verificando fim da string
     jne printString
     ret
 
-scan_key:
-        mov ah, 1h
-        int 16h
-        jnz .key_pressed
-        ret
-               
-            .key_pressed:
-                mov ah, 0h
-                int 16h
-               
-        cmp al, 32
-        je jump
-    jump:
-        call update_yBird_up
-    ret
+printf:
+  lodsb
+  cmp al, 0
+  je end
+  mov ah, 0eh
+  int 10h
+  jmp printf
+  ret
 
-screen_clear:
-    mov ax,13h
-    int 10h
-    ret
-
+ end: ret
+ 
 ; funcoes/macros retangulo
 %macro print_rectangle 4 ;(x,y,width,height)[posicao do canto superior esquerdo,tam]
      mov ax,%1
@@ -359,7 +228,6 @@ screen_clear:
      je _print_bird
     call _print_rectangle
 %endmacro
-
 _print_rectangle:
     mov es,[videomem_addr]  ; colocando endereço da mem de video em extra segment
     
@@ -398,6 +266,61 @@ _print_rectangle:
         ret
 
 ; funcoes do passaro
+update_yBird_up: ; atualizando altura do passaro para cima
+    mov ax, [bird_y]
+    cmp ax, 25
+    jle .limite
+
+    mov ax, [bird_y]
+    sub ax, [bird_up]
+    mov [bird_y], ax
+
+    mov ax, [bird_y_posFinal]
+    sub ax, [bird_up]
+    mov [bird_y_posFinal], ax
+
+    mov ax, 1
+    mov [bird_down], ax
+    ret
+    
+    .limite:
+    mov ax, 0
+    mov [bird_y], ax
+
+    mov ax, 20
+    mov [bird_y_posFinal], ax
+
+    ret
+
+update_yBird_down: ; atualizando altura do passaro para baixo
+    mov ax, [bird_y]
+    add ax, [bird_down]
+    mov [bird_y], ax
+
+    mov ax, [bird_y_posFinal]
+    add ax, [bird_down]
+    mov [bird_y_posFinal], ax
+    ret
+
+update_birdSpeed: ; atualizando velocidade de queda do passaro
+    inc word[bird_count_speed]
+    mov ax, [bird_count_speed]
+    mov bx, [bird_max_speed]
+    cmp ax, bx
+    je inc_birdSpeed
+    ret
+
+inc_birdSpeed:  ; incrementando velocidade de queda do passaro
+    mov ax, [bird_down]
+    cmp ax, 3
+    jne .sum_speed
+    .sum_speed:   
+        inc word[bird_down]
+        mov ax, 0
+        mov [bird_count_speed], ax
+    ret
+ ret
+
 _print_bird: ; auxilia na hora de printar passaro no jogo
     mov es,[videomem_addr]  ; colocando endereço da mem de video em extra segment
     
@@ -414,7 +337,7 @@ _print_bird: ; auxilia na hora de printar passaro no jogo
     ; imprimindo pixels
     .print_pixel:       ; imprimir um pixel na memoria de video[320,200]
         lodsb 
-        mov [es:di], al  ; só di pode determinar deslocamento
+        mov [es:di], al  
         ; atualizando posição a ser escrita 
         inc cx ; contador da coluna
         inc di
@@ -425,7 +348,7 @@ _print_bird: ; auxilia na hora de printar passaro no jogo
             inc dx
             cmp dx,[rec_height]
             jge .endprint_pixel
-                ;atualizar linha onde pixel sera impresso
+                ; atualizar linha onde pixel sera impresso
                 dec di
                 sub di,[rec_width]  ; retorna pro começo
                 add di,[screen_width] ; linha de baixo
@@ -435,56 +358,179 @@ _print_bird: ; auxilia na hora de printar passaro no jogo
     .endprint_pixel:
         ret
 
-update_yBird_up:
-    mov ax, [bird_y]
-    sub ax, [bird_up]
-    mov [bird_y], ax
-
-    mov ax, [bird_y_posFinal]
-    sub ax, [bird_up]
-    mov [bird_y_posFinal], ax
-
-    mov ax, 1
-    mov [bird_down], ax
-    ret
-
-update_yBird_down:
-    mov ax, [bird_y]
-    add ax, [bird_down]
-    mov [bird_y], ax
-
-    mov ax, [bird_y_posFinal]
-    add ax, [bird_down]
-    mov [bird_y_posFinal], ax
-    ret
-
-update_birdSpeed:
-    inc word[bird_count_speed]
-    mov ax, [bird_count_speed]
-    mov bx, [bird_max_speed]
-    cmp ax, bx
-    je inc_birdSpeed
-    ret
-
-inc_birdSpeed:
-    mov ax, [bird_down]
-    cmp ax, 3
-    jne .sum_speed
-    .sum_speed:   
-        inc word[bird_down]
-        mov ax, 0
-        mov [bird_count_speed], ax
-    ret
- ret
-
-print_bird: ; printa no jogo
+print_bird: ; printa passaro no jogo
     call update_birdSpeed
     call update_yBird_down
-    call clear_registers
     mov si, flappy
     print_rectangle [bird_x], [bird_y], [bird_width], [bird_height]
  ret 
 
+; funcoes menu
+print_birdMenu1:
+    call clear_registers
+    mov si, flappy
+    print_rectangle 260, 90, [bird_width], [bird_height]
+    ret
+
+print_birdMenu2:
+    call clear_registers
+    mov si, flappy
+    print_rectangle 40, 90, [bird_width], [bird_height]
+    ret
+
+print_barrasMenu:
+    print_rectangle 260, 130, [width_barra_floor], 70
+    print_rectangle 260, 0, [width_barra_roof], 70
+    print_rectangle 40, 130, [width_barra_floor], 70
+    print_rectangle 40, 0, [width_barra_roof], 70
+
+printa_titulo:
+  mov ah, 02h
+  mov dh, 5    ;row
+  mov dl, 14     ;column
+  int 10h
+
+  mov si, title
+  call printString
+  ret
+
+apaga_arrow_down:
+  mov ah,02h
+  mov dh,14    ;row
+  mov dl,13     ;column
+  mov bl,[branco_intenso]
+  int 10h
+
+  mov al, ' '
+  call putchar
+
+
+  mov ah,02h
+  mov dh,14    ;row
+  mov dl,15     ;column
+  mov bl,[amarelo]
+  int 10h
+
+  mov si, credits
+  call printf
+  ret
+
+apaga_arrow_middle:
+  mov ah,02h
+  mov dh,12    ;row
+  mov dl,13     ;column
+  mov bl,[branco_intenso]
+  int 10h
+
+  mov al, ' '
+  call putchar
+
+
+  mov ah,02h
+  mov dh,12    ;row
+  mov dl,15     ;column
+  mov bl,[amarelo]
+  int 10h
+
+  mov si, instruction
+  call printf
+  ret
+
+apaga_arrow_up:
+  mov ah,02h
+  mov dh,10    ;row
+  mov dl,13     ;column
+  mov bl,[branco_intenso]
+  int 10h
+
+  mov al, ' '
+  call putchar
+
+  mov ah,02h
+  mov dh,10    ;row
+  mov dl,15     ;column
+  mov bl, [amarelo]
+  int 10h
+
+  mov si, playName
+  call printf
+  ret
+
+printa_arrow_up:
+  mov ah,02h
+  mov dh,10    ;row
+  mov dl,13     ;column
+  mov bl,[branco_intenso]
+  int 10h
+
+  mov si, arrow
+  call printf
+
+  mov ah,02h
+  mov dh,10    ;row
+  mov dl,15     ;column
+  mov bl,[verde]
+  int 10h
+
+  mov si, playName
+  call printf
+  ret
+
+printa_arrow_middle:
+    mov ah,02h
+    mov dh,12    ;row
+    mov dl,13     ;column
+    mov bl,[branco_intenso]
+    int 10h
+
+    mov si, arrow
+    call printf
+
+    mov ah,02h
+    mov dh,12    ;row
+    mov dl,15     ;column
+    mov bl,[verde]
+    int 10h
+
+    mov si, instruction
+    call printf
+    ret
+
+printa_arrow_down:
+  mov ah,02h
+  mov dh,14    ;row
+  mov dl,13     ;column
+  mov bl,[branco_intenso]
+  int 10h
+
+  mov si, arrow
+  call printf
+
+  mov ah,02h
+  mov dh,14    ;row
+  mov dl,15     ;column
+  mov bl,[verde]
+  int 10h
+
+  mov si, credits
+  call printf
+  ret
+
+scan_key: ; tecla apertada
+        mov ah, 1h
+        int 16h
+        jnz .key_pressed
+        ret
+               
+            .key_pressed:
+                mov ah, 0h
+                int 16h
+               
+        cmp al, 32  ; espaco = passaro sobe
+        jne .nada2
+        call update_yBird_up
+    .nada2:
+    ret
 ; funcoes do jogo
 collision:    
     mov ax,[bird_x]
@@ -492,18 +538,24 @@ collision:
     mov bx,[bird_y]
     add bx,10
 
-    cmp bx, 200
+    ; impedindo colisao com o teto
+    cmp bx, [screen_height]
     jge collision_exist
 
     mov cx,[x_barra_floor]
     cmp ax,cx
     jle .collision_not_exist
+
     add cx,[width_barra_floor]
     cmp ax,cx
     jge .collision_not_exist
+
+    ; y da barra inferior = y do passaro -> colisao
     mov cx,[y_barra_floor]
     cmp bx,cx
     jge collision_exist
+
+    ; y da barra superior = y do passaro -> colisao
     mov cx,[y_barra_roof]
     add cx,[height_barra_roof]
     cmp bx,cx
@@ -560,188 +612,17 @@ menu:
      int 0x1A
      mov [current_number], dx
 
-    call set_videomode
+    call screen_clear
+    ; printando menu
     call printa_titulo
     call print_birdMenu1
     call print_birdMenu2
     call print_barrasMenu
-    call option1   
-
+    call optionMenu   
 
     jmp $
 
- print_birdMenu1:
-    call clear_registers
-    mov si, flappy
-    print_rectangle 260, 90, [bird_width], [bird_height]
-    ret
-
- print_birdMenu2:
-    call clear_registers
-    mov si, flappy
-    print_rectangle 40, 90, [bird_width], [bird_height]
-    ret
-
- print_barrasMenu:
-    print_rectangle 260, [y_barra_floor], [width_barra_floor], [height_barra_floor]
-    print_rectangle 260, [y_barra_roof], [width_barra_roof], [height_barra_roof]
-    print_rectangle 40, [y_barra_floor], [width_barra_floor], [height_barra_floor]
-    print_rectangle 40, [y_barra_roof], [width_barra_roof], [height_barra_roof]
-
- printa_titulo:
-  mov ah, 02h
-  mov dh, 5    ;row
-  mov dl, 14     ;column
-  int 10h
-
-  mov si, title
-  call printString
-  ret
-
- apaga_arrow_down:
-  mov ah,02h
-  mov dh,14    ;row
-  mov dl,13     ;column
-  mov bl,[branco_intenso]
-  int 10h
-
-  mov al, ' '
-  call putchar
-
-
-  mov ah,02h
-  mov dh,14    ;row
-  mov dl,15     ;column
-  mov bl,[amarelo]
-  int 10h
-
-  mov si, credits
-  call printf
-  ret
-
- apaga_arrow_middle:
-  mov ah,02h
-  mov dh,12    ;row
-  mov dl,13     ;column
-  mov bl,[branco_intenso]
-  int 10h
-
-  mov al, ' '
-  call putchar
-
-
-  mov ah,02h
-  mov dh,12    ;row
-  mov dl,15     ;column
-  mov bl,[amarelo]
-  int 10h
-
-  mov si, instruction
-  call printf
-  ret
-
- apaga_arrow_up:
-  mov ah,02h
-  mov dh,10    ;row
-  mov dl,13     ;column
-  mov bl,[branco_intenso]
-  int 10h
-
-  mov al, ' '
-  call putchar
-
-  mov ah,02h
-  mov dh,10    ;row
-  mov dl,15     ;column
-  mov bl, [amarelo]
-  int 10h
-
-  mov si, playName
-  call printf
-  ret
-
- printa_arrow_up:
-  mov ah,02h
-  mov dh,10    ;row
-  mov dl,13     ;column
-  mov bl,[branco_intenso]
-  int 10h
-
-  mov si, arrow
-  call printf
-
-  mov ah,02h
-  mov dh,10    ;row
-  mov dl,15     ;column
-  mov bl,[verde]
-  int 10h
-
-  mov si, playName
-  call printf
-  ret
-
- printa_arrow_middle:
-    mov ah,02h
-    mov dh,12    ;row
-    mov dl,13     ;column
-    mov bl,[branco_intenso]
-    int 10h
-
-    mov si, arrow
-    call printf
-
-    mov ah,02h
-    mov dh,12    ;row
-    mov dl,15     ;column
-    mov bl,[verde]
-    int 10h
-
-    mov si, instruction
-    call printf
-    ret
-
- printa_arrow_down:
-  mov ah,02h
-  mov dh,14    ;row
-  mov dl,13     ;column
-  mov bl,[branco_intenso]
-  int 10h
-
-  mov si, arrow
-  call printf
-
-  mov ah,02h
-  mov dh,14    ;row
-  mov dl,15     ;column
-  mov bl,[verde]
-  int 10h
-
-  mov si, credits
-  call printf
-  ret
-
- printf:
-  lodsb
-  cmp al, 0
-  je end
-  mov ah, 0eh
-  int 10h
-  jmp printf
-  ret
-
- getchar:
-  mov ah, 00h
-  int 16h
-  ret
-
- putchar:
-  mov ah, 0eh ;modo de imprmir na tela
-  int 10h ;imprime o que tá em al
-  ret
-
- end: ret
-
- option1:
+ optionMenu:
   call apaga_arrow_down
   call apaga_arrow_middle
   call printa_arrow_up
@@ -749,11 +630,11 @@ menu:
   cmp al, 13
   je play
   cmp al, 's'
-  je option2
-  jmp option1
+  je optionInst
+  jmp optionMenu
   ret
 
- option2:
+ optionInst:
   call apaga_arrow_up
   call apaga_arrow_down
   call printa_arrow_middle
@@ -761,13 +642,13 @@ menu:
   cmp al, 13
   je instrucao
   cmp al, 'w'
-  je option1
+  je optionMenu
   cmp al, 's'
-  je option3
-  jmp option2
+  je optionCred
+  jmp optionInst
   ret
      
- option3:
+ optionCred:
   call apaga_arrow_up
   call apaga_arrow_middle
   call printa_arrow_down
@@ -775,11 +656,11 @@ menu:
   cmp al, 13
   je credito
   cmp al, 'w'
-  je option2
-  jmp option3
+  je optionInst
+  jmp optionCred
   ret
 
-loopGame:   ;loop cx[xbarra,xbarra+3]
+loopGame:   
     call scan_key
     call print_bird
     call update_Xbarra
@@ -790,7 +671,6 @@ loopGame:   ;loop cx[xbarra,xbarra+3]
     print_rectangle [x_chao], [y_chao], [tam_chao_x], [tam_chao_y]
     call collision
 
-    call pontos
     delay_fps               ; delay de 1/30 segundos
     call screen_clear       ; limpar screen a cada frame
     jmp loopGame
@@ -798,7 +678,7 @@ loopGame:   ;loop cx[xbarra,xbarra+3]
     .end_game_loop:
 
 play:
-    call set_videomode ;set video mode 
+    call screen_clear ;set video mode 
     mov al,3
 
     mov cx,160
@@ -808,18 +688,18 @@ play:
 
 ;Caso seja selecionado "Instruction"
 instrucao:
-    ;Carregando o video para limpar a screen
+    ;Carregando o video para limpar a tela
     mov ah, 0
     mov al,12h
     int 10h
 
-    ;Mudando a cor do background para ciano
+    ;Mudando a cor do background para preto
     mov ah, 0bh
     mov bh, 0
     mov bl, [preto]
     int 10h 
 
-    ;Colocando o title
+    ;Colocando o titulo Instrucao
 	mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
 	mov dh, 5   ;Linha
@@ -874,20 +754,20 @@ ESCinstrucao:
 	je menu
 	jne ESCinstrucao
 
-;Caso seja selecionado "Credits (3)"
+;Caso seja selecionado "Credits"
 credito:
-    ;Carregando o video para limpar a screen
+    ;Carregando o video para limpar a tela
     mov ah, 0
     mov al,12h
     int 10h
 
-    ;Mudando a cor do background para ciano
+    ;Mudando a cor do background para preto
     mov ah, 0bh
     mov bh, 0
     mov bl, [preto]
     int 10h 
 
-    ;Colocando o title
+    ;Colocando o titulo Creditos
 	mov ah, 02h  ;Setando o cursor
 	mov bh, 0    ;Pagina 0
 	mov dh, 3    ;Linha
