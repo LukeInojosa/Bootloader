@@ -73,7 +73,7 @@ flappy db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 ; Pontos
     pontuacao dw 0
-    stringPontos db ''
+    stringPontos db '0', 0
 
 ; Info tela inicial
  title db 'FLAPPLY BIRD', 0
@@ -152,17 +152,10 @@ pontos:
     mov di, stringPontos
 
     call tostring
-    call print_pontuacao
+    call print_string_pontos
 
     ret
 
-
-print_pontuacao: 
-    mov si, stringPontos
-    mov bx, stringPontos
-    mov ax, stringPontos
-    call printStringPontos
-    ret
 
 tostring:
     push di
@@ -218,17 +211,15 @@ reverse:
         .endloop3:
         ret
 
-printStringPontos:
-    lodsb
-    mov ah, 0xe
-    mov bh, 0
-    mov bl, [amarelo]
-    int 10h
-
-    cmp al, 0
-    jne printStringPontos
+print_string_pontos:
+    mov ah, 02h  ;Setando o cursor
+	mov bh, 0    ;Pagina 0
+	mov dh, 7    ;Linha
+	mov dl, 10   ;Coluna
+	int 10h
+    mov si, stringPontos
+    call printString
     ret
-
 
 ; funcoes menu
 set_videomode:
@@ -771,7 +762,7 @@ loopGame:   ;loop cx[xbarra,xbarra+3]
     call update_Xbarra
     call update_random_number
 
-    ;call pontos
+    call pontos
 
     print_rectangle [x_barra_floor], [y_barra_floor], [width_barra_floor], [height_barra_floor]
     print_rectangle [x_barra_roof], [y_barra_roof], [width_barra_roof], [height_barra_roof]
