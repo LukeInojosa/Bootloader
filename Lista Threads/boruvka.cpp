@@ -37,12 +37,12 @@ class Floresta{
         }
 
         int Find(int node){
-            if (pai[node] == node){
+            if (pai[node] == node){     // se encontrou retorna o pai
                 return pai[node];
             }
             
-            int raiz = Find(pai[node]);
-            pai[node] = raiz;
+            int raiz = Find(pai[node]);     // define o que encontrou como raiz
+            pai[node] = raiz;               // o que encontrou e o novo pai
             return raiz;
         }
 
@@ -97,7 +97,7 @@ aresta find_best_edge(vector<vector<pair<int,int>>>grafo, Floresta &f, list<int>
             
         }
     }
-    return best_edge;
+    return best_edge;       // retorna uma aresta
 }
 
 vector<aresta> find_best_edges(vector<vector<pair<int,int>>>grafo, Floresta &f, vector<aresta> &mst){
@@ -113,7 +113,7 @@ vector<aresta> find_best_edges(vector<vector<pair<int,int>>>grafo, Floresta &f, 
             best_edges.push_back(best_edge);
         }
     }
-    return best_edges;
+    return best_edges;      // retorna um array de arestas
         
 }
 
@@ -124,12 +124,12 @@ vector <aresta> boruvka(vector<vector<pair<int,int>>>grafo){
 
     Floresta f(n_nodes);//criar conjunto de arvores (floresta)
    
-    //enquanto numero de arvores  > 1:
+    //enquanto numero de arvores  > 1: 
     while (f.n_arvores >  1){
         //achar melhor edge para cada arvore
         vector<aresta> best_edges = find_best_edges(grafo,f,mst);
         
-        //commit das arestas e uniao das arvores:
+        //commit das arestas e uniao das arvores (best_edge):
         for(auto best_edge : best_edges){
             
             int n1 = best_edge.node1;
