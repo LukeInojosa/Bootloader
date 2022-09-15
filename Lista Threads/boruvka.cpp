@@ -123,12 +123,24 @@ vector <aresta> boruvka(vector<vector<pair<int,int>>>grafo){
     int n_nodes = grafo.size();
 
     Floresta f(n_nodes);//criar conjunto de arvores (floresta)
-   
+    
     //enquanto numero de arvores  > 1: 
     while (f.n_arvores >  1){
         //achar melhor edge para cada arvore
         vector<aresta> best_edges = find_best_edges(grafo,f,mst);
-        
+
+        // pthread_t Th[f.n_arvores];
+
+        // for (int i = 0; i < f.n_arvores; i++) {
+        //     if (pthread_create(&Th[i], NULL, &find_best_edges, NULL) != 0) {
+        //         // como passar os argumentos find_best_edges(grafo,f,mst), fazer eles globais?
+        //         perror("Failed to create thread\n");
+        //         return 1;
+        //     }
+        // }
+        // for (int i = 0; i < f.n_arvores; i++) {
+        //     if (pthread_join(Th[i], (void**)best_edges) != 0) return 2;
+        // }
         //commit das arestas e uniao das arvores (best_edge):
         for(auto best_edge : best_edges){
             
